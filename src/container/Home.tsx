@@ -130,10 +130,12 @@ function Author({ did }: { did: string }) {
     getProfileWithDid(did);
   }, [did, getProfileWithDid]);
 
+  //   console.log("didProfile", did, didProfile?.genericProfile.name);
+
   return (
     <div>
-      <span>author:</span>{" "}
-      <span>{didProfile?.genericProfile?.name || shortPubKey(did)}</span>
+      <span>author:</span> <span>{didProfile?.genericProfile?.name}</span>
+      <span style={{ marginLeft: "2px" }}>@{shortPubKey(did)}</span>
     </div>
   );
 }

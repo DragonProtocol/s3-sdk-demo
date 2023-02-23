@@ -73,6 +73,7 @@ export const useProfile = () => {
             createGenericProfile(input: $input) {
                 document {
                     id
+                    name
                 }
             }
         }
@@ -111,7 +112,7 @@ export const useProfile = () => {
       }
       `;
       const res = await profileComposeClient.executeQuery(createPostMutation, {
-        id: "did:pkh:solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1:456degdQ55UAMDBRfTtxyxPXoT423XSs1LjS9EEAyS36",
+        id: did,
       });
 
       if (res.errors) {
