@@ -49,9 +49,11 @@ function Header() {
     async (type?: string) => {
       const composeClients = [profileComposeClient, postCommentComposeClient];
       if (type === "phantom") {
+        localStorage.setItem("ceramic-wallet", "phantom");
         const sid = await authWithPhantom(ceramic, composeClients);
         setSessId(sid);
       } else {
+        localStorage.setItem("ceramic-wallet", "metamask");
         const sid = await authWithEthereum(ceramic, composeClients);
         setSessId(sid);
       }
@@ -61,7 +63,9 @@ function Header() {
   );
   const handleLogin = useCallback(async () => {
     // TODO ethereum
-    authCeramic("phantom");
+    const prev = localStorage.getItem("ceramic-wallet") || "";
+    if (!prev) return;
+    authCeramic(prev);
   }, [authCeramic]);
 
   useEffect(() => {
