@@ -6,7 +6,8 @@ import { definition as profileDefinition } from "../__generated__/profile-defini
 import { definition as postCommentDefinition } from "../__generated__/post-comment-relation-definition";
 import { RuntimeCompositeDefinition } from "@composedb/types";
 
-const ceramicHost = "http://13.215.254.225:7007"; //"http://localhost:7007"
+const ceramicHost =
+  process.env.REACT_APP_CERAMIC_HOST || "https://ceramic.s3.xyz/";
 const ceramic = new CeramicClient(ceramicHost);
 
 const profileComposeClient = new ComposeClient({
