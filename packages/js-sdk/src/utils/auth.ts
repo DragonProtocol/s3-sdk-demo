@@ -1,7 +1,6 @@
 import { DIDSession } from "did-session";
 import { SolanaWebAuth, getAccountIdByNetwork } from "@didtools/pkh-solana";
 import { EthereumWebAuth, getAccountId } from "@didtools/pkh-ethereum";
-
 import type { CeramicApi } from "@ceramicnetwork/common";
 import type { ComposeClient } from "@composedb/client";
 

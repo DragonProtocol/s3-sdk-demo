@@ -1,0 +1,30 @@
+query {
+  viewer {
+    postList(first: 5) {
+      edges {
+        node {
+          id
+          title
+          text
+          commentsCount
+          comments(first: 10) {
+            edges {
+              node {
+                id
+                text
+                author {
+                  id
+                }
+              }
+            }
+            pageInfo {
+              hasNextPage
+              startCursor
+              endCursor
+            }
+          }
+        }
+      }
+    }
+  }
+}

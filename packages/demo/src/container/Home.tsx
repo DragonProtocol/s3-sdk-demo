@@ -1,15 +1,22 @@
-import { useCallback, useEffect, useState } from "react";
+import { useS3Context } from "@us3r/js-sdk";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import usePost from "../hooks/usePost";
-import { useProfile } from "../hooks/useProfile";
 import shortPubKey from "../utils/shortPubKey";
 
 export default function Home() {
-  const { post, getAllPost } = usePost();
-
+  // const { post, } = usePost();
+  const { getAllPost, createNewPost, createNewComment } = useS3Context();
+  const [post, setPost] = useState<Array<any>>([]);
   useEffect(() => {
-    getAllPost();
+    if (getAllPost) {
+      getAllPost()
+        .then((data) => {
+          console.log(data);
+          setPost(data.edges);
+        })
+        .catch(console.error);
+    }
   }, [getAllPost]);
 
   return (
@@ -29,7 +36,7 @@ export default function Home() {
             <div>
               <p>commentCount: {item.node.commentsCount}</p>
               <div className="comments">
-                {item.node.comments.edges.map((item) => {
+                {item.node.comments.edges.map((item: any) => {
                   return (
                     <CommentCard key={item.node.id}>
                       <Author did={item.node.author.id} />
@@ -47,7 +54,7 @@ export default function Home() {
 }
 
 function CreatePostCard() {
-  const { post, getAllPost, createNewPost } = usePost();
+  const { getAllPost, createNewPost, createNewComment } = useS3Context();
 
   const [postTitle, setPostTitle] = useState("");
   const [postContent, setPostContent] = useState("");
@@ -74,7 +81,7 @@ function CreatePostCard() {
       />
       <button
         onClick={() => {
-          createNewPost(postTitle, postContent);
+          createNewPost && createNewPost(postTitle, postContent);
         }}
       >
         createNewPost
@@ -125,9 +132,20 @@ const CommentCard = styled.div`
 `;
 
 function Author({ did }: { did: string }) {
-  const { didProfile, getProfileWithDid } = useProfile();
+  const { getProfileWithDid } = useS3Context();
+  const [didProfile, setDidProfile] = useState<{
+    genericProfile?: {
+      name: string;
+    };
+  }>();
   useEffect(() => {
-    getProfileWithDid(did);
+    if (getProfileWithDid) {
+      getProfileWithDid(did)
+        .then((data) => {
+          setDidProfile(data);
+        })
+        .catch(console.error);
+    }
   }, [did, getProfileWithDid]);
 
   //   console.log("didProfile", did, didProfile?.genericProfile.name);
@@ -141,7 +159,7 @@ function Author({ did }: { did: string }) {
 }
 
 function SubmitComment({ postId }: { postId: string }) {
-  const { post, getAllPost, createComment } = usePost();
+  const { getAllPost, createNewPost, createNewComment } = useS3Context();
   const [text, setText] = useState("");
   return (
     <div className="submit-area">
@@ -155,7 +173,7 @@ function SubmitComment({ postId }: { postId: string }) {
       />
       <button
         onClick={() => {
-          createComment(postId, text);
+          createNewComment && createNewComment(postId, text);
         }}
       >
         submit comment

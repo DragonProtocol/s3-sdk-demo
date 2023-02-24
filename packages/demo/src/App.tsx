@@ -4,23 +4,29 @@ import styled from "styled-components";
 
 import "./App.css";
 import Home from "./container/Home";
-// import ProfilePage from "./container/profile";
-import { CeramicWrapper, useCeramicContext } from "./context";
 import shortPubKey from "./utils/shortPubKey";
-import { authWithEthereum, authWithPhantom } from "./utils";
-import { useProfile } from "./hooks/useProfile";
 import Profile from "./container/ProfilePage";
+import {
+  S3Provider,
+  useS3Context,
+  authWithEthereum,
+  authWithPhantom,
+} from "@us3r/js-sdk";
 
 export default function App() {
   return (
-    <CeramicWrapper>
+    <S3Provider
+      ceramicHost={
+        process.env.REACT_APP_CERAMIC_HOST || "https://ceramic.s3.xyz/"
+      }
+    >
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="profile" element={<Profile />} />
         </Route>
       </Routes>
-    </CeramicWrapper>
+    </S3Provider>
   );
 }
 
@@ -40,13 +46,21 @@ function Layout() {
 const AppContainer = styled.div``;
 
 function Header() {
-  const { ceramic, profileComposeClient, postCommentComposeClient } =
-    useCeramicContext();
+  const {
+    ceramic,
+    profileComposeClient,
+    postCommentComposeClient,
+    getPersonalProfile,
+  } = useS3Context()!;
   const [sessId, setSessId] = useState("");
-  const { getProfile, profile } = useProfile();
+  const [profile, setProfile] = useState<{
+    name: string;
+  }>();
 
   const authCeramic = useCallback(
     async (type?: string) => {
+      if (!ceramic || !profileComposeClient || !postCommentComposeClient)
+        return;
       const composeClients = [profileComposeClient, postCommentComposeClient];
       if (type === "phantom") {
         localStorage.setItem("ceramic-wallet", "phantom");
@@ -57,9 +71,17 @@ function Header() {
         const sid = await authWithEthereum(ceramic, composeClients);
         setSessId(sid);
       }
-      await getProfile();
+      if (getPersonalProfile) {
+        const data = await getPersonalProfile();
+        setProfile(data);
+      }
     },
-    [getProfile, ceramic, profileComposeClient, postCommentComposeClient]
+    [
+      getPersonalProfile,
+      ceramic,
+      profileComposeClient,
+      postCommentComposeClient,
+    ]
   );
   const handleLogin = useCallback(async () => {
     // TODO ethereum
