@@ -12,6 +12,8 @@ import {
 } from "./api";
 
 const CeramicContext = createContext<{
+  us3rAuth: Us3rAuth;
+  us3rAuthValid: boolean;
   getProfileWithDid: (did: string) => Promise<any>;
   updateProfile: (name: string) => Promise<void>;
   connectUs3r: (chain?: AuthChain) => Promise<void>;
@@ -21,8 +23,7 @@ const CeramicContext = createContext<{
   };
 } | null>(null);
 
-export const us3rAuth = new Us3rAuth();
-
+const us3rAuth = new Us3rAuth();
 export const Us3rProfileProvider = ({
   ceramicHost,
   children,
@@ -33,14 +34,14 @@ export const Us3rProfileProvider = ({
     ceramic: ceramicHost,
     definition: profileDefinition as RuntimeCompositeDefinition,
   });
-
+  const [us3rAuthValid, setUs3rAuthValid] = useState(false);
   const [sessId, setSessId] = useState("");
   const [profile, setProfile] = useState<{
     name: string;
   }>();
 
   const getPersonalProfile = useCallback(async () => {
-    if (!profileComposeClient.context.isAuthenticated) {
+    if (!profileComposeClient.context.isAuthenticated()) {
       throw new Error("authorized with wallet first");
     }
 
@@ -52,7 +53,7 @@ export const Us3rProfileProvider = ({
   }, []);
 
   const updatePersonalProfile = useCallback(async (name: string) => {
-    if (!profileComposeClient.context.isAuthenticated) {
+    if (!profileComposeClient.context.isAuthenticated()) {
       throw new Error("authorized with wallet first");
     }
     const update = await mutationPersonalProfile(profileComposeClient, {
@@ -78,6 +79,7 @@ export const Us3rProfileProvider = ({
       const profile = await getPersonalProfile();
       setSessId(us3rAuth.session?.id || "");
       setProfile(profile);
+      setUs3rAuthValid(true);
     },
     [getPersonalProfile]
   );
@@ -89,6 +91,7 @@ export const Us3rProfileProvider = ({
       const profile = await getPersonalProfile();
       setProfile(profile);
       setSessId(us3rAuth.session?.id || "");
+      setUs3rAuthValid(true);
     }
   }, [getPersonalProfile]);
 
@@ -108,6 +111,8 @@ export const Us3rProfileProvider = ({
   return (
     <CeramicContext.Provider
       value={{
+        us3rAuth,
+        us3rAuthValid,
         getProfileWithDid,
 
         updateProfile,

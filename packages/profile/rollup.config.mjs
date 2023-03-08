@@ -21,7 +21,7 @@ export default [
       },
     ],
     plugins: [commonjs(), typescript({ tsconfig: "./tsconfig.json" })],
-    external: ["react", "@composedb/client", "@us3r/auth"],
+    external: ["react", "@composedb/client", "@us3r-network/auth"],
   },
   {
     input: "dist/esm/index.d.ts",
