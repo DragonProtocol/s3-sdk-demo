@@ -23,13 +23,37 @@ export async function queryPersonalProfile(
   return profile;
 }
 
+export async function mutationUpdatePersonalProfile(
+  profileComposeClient: ComposeClient,
+  { name }: { name: string }
+) {
+  const query = `
+  mutation($input: UpdateNewGenericProfileInput!) {
+      updateNewGenericProfile(input: $input) {
+          document {
+              id
+              name
+          }
+      }
+  }
+  `;
+  const update = await profileComposeClient.executeQuery(query, {
+    input: {
+      content: {
+        name,
+      },
+    },
+  });
+  return update;
+}
+
 export async function mutationPersonalProfile(
   profileComposeClient: ComposeClient,
   { name }: { name: string }
 ) {
   const query = `
   mutation($input: CreateNewGenericProfileInput!) {
-      createNewGenericProfile(input: $input) {
+    createNewGenericProfile(input: $input) {
           document {
               id
               name
