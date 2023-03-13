@@ -105,6 +105,9 @@ export async function queryThreadInfo(
                 node {
                   id
                   type
+                  creator {
+                    id
+                  }
                 }
               }
             }
@@ -125,6 +128,9 @@ export async function queryThreadInfo(
               edges {
                 node {
                   id
+                  creator {
+                    id
+                  }
                 }
               }
             }
@@ -135,6 +141,9 @@ export async function queryThreadInfo(
                   id
                   text
                   value
+                  creator {
+                    id
+                  }
                 }
               }
             }

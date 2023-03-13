@@ -4,10 +4,30 @@ export type Creator = {
   id: string;
 };
 
-export type Vote = {};
-export type Comment = {};
-export type Favor = {};
-export type Score = {};
+export type Vote = {
+  id: string;
+  type: "UP_VOTE" | "DOWN_VOTE";
+  creator: Creator;
+  thread?: Thread;
+};
+export type Comment = {
+  id: string;
+  text: string;
+  creator: Creator;
+  thread?: Thread;
+};
+export type Favor = {
+  id: string;
+  creator: Creator;
+  thread?: Thread;
+};
+export type Score = {
+  id: string;
+  text: string;
+  value: number;
+  creator: Creator;
+  thread?: Thread;
+};
 
 export type Thread = {
   id: string;

@@ -15,15 +15,21 @@ import {
   queryThreadInfo,
   mutationNewComment,
 } from "./api";
-import { Thread, VoteType } from "./api/types";
+import { Favor, Comment, Score, Thread, Vote, VoteType } from "./api/types";
 import {
   mutationNewFavor,
   mutationNewScore,
   mutationNewVote,
 } from "./api/mutations";
 import { queryThreadListDesc } from "./api/queries";
+import {
+  queryPersonalCommentList,
+  queryPersonalFavorList,
+  queryPersonalScoreList,
+  queryPersonalVoteList,
+} from "./api/personals";
 
-export { Thread, VoteType } from "./api/types";
+export { Thread, Comment, Score, Vote, Favor, VoteType } from "./api/types";
 
 const ThreadCeramicContext = createContext<{
   threadComposeClient: ComposeClient;
@@ -32,6 +38,13 @@ const ThreadCeramicContext = createContext<{
   getThreadListDesc: ({ last = 10, before = "" }) => Promise<Page<Thread>>;
   getThreadInfo: (streamId: string) => Promise<Thread>;
   getPersonalThreadList: ({ first = 10, after = "" }) => Promise<Page<Thread>>;
+  getPersonalCommentList: ({
+    first = 10,
+    after = "",
+  }) => Promise<Page<Comment>>;
+  getPersonalFavorList: ({ first = 10, after = "" }) => Promise<Page<Favor>>;
+  getPersonalScoreList: ({ first = 10, after = "" }) => Promise<Page<Score>>;
+  getPersonalVoteList: ({ first = 10, after = "" }) => Promise<Page<Vote>>;
 
   createNewThread: ({
     url,
@@ -118,6 +131,50 @@ export const Us3rThreadProvider = ({
     [relationsComposeClient]
   );
 
+  const getPersonalCommentList = useCallback(
+    async ({ first = 10, after = "" }) => {
+      const data = await queryPersonalCommentList(relationsComposeClient, {
+        first,
+        after,
+      });
+      return data;
+    },
+    [relationsComposeClient]
+  );
+
+  const getPersonalFavorList = useCallback(
+    async ({ first = 10, after = "" }) => {
+      const data = await queryPersonalFavorList(relationsComposeClient, {
+        first,
+        after,
+      });
+      return data;
+    },
+    [relationsComposeClient]
+  );
+
+  const getPersonalScoreList = useCallback(
+    async ({ first = 10, after = "" }) => {
+      const data = await queryPersonalScoreList(relationsComposeClient, {
+        first,
+        after,
+      });
+      return data;
+    },
+    [relationsComposeClient]
+  );
+
+  const getPersonalVoteList = useCallback(
+    async ({ first = 10, after = "" }) => {
+      const data = await queryPersonalVoteList(relationsComposeClient, {
+        first,
+        after,
+      });
+      return data;
+    },
+    [relationsComposeClient]
+  );
+
   const createNewThread = useCallback(
     async ({ url, type = "" }: { url: string; type?: string }) => {
       return await mutationNewThread(relationsComposeClient, {
@@ -187,6 +244,10 @@ export const Us3rThreadProvider = ({
         getThreadListDesc,
         getThreadInfo,
         getPersonalThreadList,
+        getPersonalCommentList,
+        getPersonalFavorList,
+        getPersonalScoreList,
+        getPersonalVoteList,
         createNewThread,
         createNewComment,
         createNewFavor,
