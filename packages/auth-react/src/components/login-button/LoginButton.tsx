@@ -19,7 +19,7 @@ function LoginButton({ onClick, ...otherProps }: LoginButtonProps) {
         height: "48px",
         display: "flex",
         alignItems: "center",
-        gap: "10px",
+        gap: 2,
       }}
       onClick={(e) => {
         if (onClick) {

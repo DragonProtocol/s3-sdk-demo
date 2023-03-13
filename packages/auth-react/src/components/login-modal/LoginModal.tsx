@@ -27,13 +27,13 @@ function LoginModal({ open, onClose }: LoginModalProps) {
           flexDirection: "column",
           gap: 3,
         }}
-        className="login-options"
+        className="us3r-LoginModal__options"
       >
         {newAuthorizers.map((item) => (
           <LoginWithAuthorizerButton
             key={item.authToolType}
             authToolType={item.authToolType}
-            className="login-option-other"
+            className="us3r-LoginModal__option"
           />
         ))}
       </Flex>
