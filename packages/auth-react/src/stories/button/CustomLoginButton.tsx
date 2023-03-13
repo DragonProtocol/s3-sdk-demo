@@ -1,10 +1,10 @@
 import React from "react";
-import { AuthToolType } from "../../authorizers";
-import UserAvatar from "../../components/avatar/UserAvatar";
-import { useUs3rAuthModal } from "../../components/provider/AuthModalContext";
-import Us3rAuthProvider, {
+import {
   useUs3rAuth,
-} from "../../components/provider/Us3rAuthProvider";
+  useUs3rAuthModal,
+  UserAvatar,
+} from "@us3r-network/auth-react";
+import App from "../app/App";
 
 const CustomLoginButton: React.VFC = () => {
   const { session, logout } = useUs3rAuth();
@@ -35,16 +35,12 @@ const CustomLoginButton: React.VFC = () => {
   );
 };
 
-const authToolTypes = [
-  AuthToolType.metamask_wallet,
-  AuthToolType.phantom_wallet,
-];
-const AppWrapper: React.VFC = () => {
+const Page: React.VFC = () => {
   return (
-    <Us3rAuthProvider authConfig={{ authToolTypes }}>
+    <App>
       <CustomLoginButton />
-    </Us3rAuthProvider>
+    </App>
   );
 };
 
-export default AppWrapper;
+export default Page;

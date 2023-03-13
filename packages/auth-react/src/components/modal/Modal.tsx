@@ -24,9 +24,6 @@ const ModalContent = styled(Box)<{
   isOpen: boolean;
 }>`
   min-width: 350px;
-  background-color: ${(props) => props.theme.colors.background};
-  border-radius: ${(props) => props.theme.radius.default};
-  box-shadow: ${(props) => props.theme.shadows.modal};
   opacity: ${(props) => (props.isOpen ? 1 : 0)};
   transform: ${(props) =>
     props.isOpen ? "translateY(0)" : "translateY(-50px)"};
@@ -130,6 +127,7 @@ const Modal = ({
       }}
     >
       <ModalContent
+        variant={"modal"}
         className={`Us3r-Modal__content ${contentClassName ?? ""}`}
         isOpen={isOpen}
         onClick={(e) => e.stopPropagation()}

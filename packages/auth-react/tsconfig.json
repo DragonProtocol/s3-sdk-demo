@@ -2,7 +2,10 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "@us3r-network/auth-react": ["./src/index.ts"]
+    }
   },
   "files": ["./global.d.ts", "./image.d.ts"],
   "include": ["src/**/*"],

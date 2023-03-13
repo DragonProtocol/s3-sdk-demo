@@ -1,22 +1,9 @@
-import React from "react";
-import { AuthToolType } from "../../authorizers";
-import { useUs3rAuthModal } from "../../components/provider/AuthModalContext";
-import Us3rAuthProvider from "../../components/provider/Us3rAuthProvider";
-import { ThemeType } from "../../themes";
-const authToolTypes = [
-  AuthToolType.metamask_wallet,
-  AuthToolType.phantom_wallet,
-];
-type LoginModalProps = {
-  theme: ThemeType;
-  setTheme: (theme: ThemeType) => void;
-};
-const LoginModal: React.VFC<LoginModalProps> = ({
-  theme,
-  setTheme,
-}: LoginModalProps) => {
-  const { openLoginModal, loginModalOpen } = useUs3rAuthModal();
+import { useUs3rAuthModal } from "@us3r-network/auth-react";
+import App, { useAppContext } from "../app/App";
 
+const TestLoginModal = () => {
+  const { theme, setTheme } = useAppContext();
+  const { openLoginModal, loginModalOpen } = useUs3rAuthModal();
   return (
     <div
       style={{
@@ -56,16 +43,13 @@ const LoginModal: React.VFC<LoginModalProps> = ({
     </div>
   );
 };
-const AppWrapper: React.VFC = () => {
-  const [theme, setTheme] = React.useState<ThemeType>("light");
+
+const Page: React.VFC = () => {
   return (
-    <Us3rAuthProvider
-      authConfig={{ authToolTypes }}
-      themeConfig={{ themeType: theme }}
-    >
-      <LoginModal theme={theme} setTheme={setTheme} />
-    </Us3rAuthProvider>
+    <App>
+      <TestLoginModal />
+    </App>
   );
 };
 
-export default AppWrapper;
+export default Page;

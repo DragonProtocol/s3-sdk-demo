@@ -1,14 +1,12 @@
-import React from "react";
-import { AuthToolType } from "../../authorizers";
-import { Us3rAuthProvider } from "../../components/index";
-import LoginWithAuthorizerButton from "../../components/login-button/LoginWithAuthorizerButton";
-const authToolTypes = [
-  AuthToolType.metamask_wallet,
-  AuthToolType.phantom_wallet,
-];
-const Button: React.VFC = () => {
+import {
+  AuthToolType,
+  LoginWithAuthorizerButton,
+} from "@us3r-network/auth-react";
+import App from "../app/App";
+
+const Page: React.VFC = () => {
   return (
-    <Us3rAuthProvider authConfig={{ authToolTypes }}>
+    <App>
       <div
         style={{
           display: "flex",
@@ -20,7 +18,8 @@ const Button: React.VFC = () => {
         />
         <LoginWithAuthorizerButton authToolType={AuthToolType.phantom_wallet} />
       </div>
-    </Us3rAuthProvider>
+    </App>
   );
 };
-export default Button;
+
+export default Page;

@@ -1,7 +1,6 @@
 import React from "react";
-import { AuthToolType } from "../../authorizers";
-import UserAvatar from "../../components/avatar/UserAvatar";
-import Us3rAuthProvider from "../../components/provider/Us3rAuthProvider";
+import { UserAvatar } from "@us3r-network/auth-react";
+import App from "../app/App";
 
 const Avatar: React.VFC = () => {
   const UserList = [
@@ -23,15 +22,13 @@ const Avatar: React.VFC = () => {
     </div>
   );
 };
-const authToolTypes = [
-  AuthToolType.metamask_wallet,
-  AuthToolType.phantom_wallet,
-];
-const AppWrapper: React.VFC = () => {
+
+const Page: React.VFC = () => {
   return (
-    <Us3rAuthProvider authConfig={{ authToolTypes }}>
+    <App>
       <Avatar />
-    </Us3rAuthProvider>
+    </App>
   );
 };
-export default AppWrapper;
+
+export default Page;

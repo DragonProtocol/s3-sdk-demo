@@ -63,6 +63,7 @@ export default {
       p: 2,
       bg: "background",
       boxShadow: "modal",
+      borderRadius: "default",
     },
   },
   buttons: {
