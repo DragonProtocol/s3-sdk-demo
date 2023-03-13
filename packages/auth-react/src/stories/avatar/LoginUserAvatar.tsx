@@ -4,7 +4,7 @@ import App from "../app/App";
 
 const Avatar = () => {
   const { session } = useUs3rAuth();
-  return <UserAvatar did={session?.id} title={session?.id} />;
+  return <UserAvatar did={session?.did.id} title={session?.did.id} />;
 };
 
 const Page: React.VFC = () => {

@@ -5,13 +5,13 @@ import App from "../app/App";
 const Avatar: React.VFC = () => {
   const UserList = [
     {
-      did: "did:pkh:001",
+      did: "did:key:001",
     },
     {
-      did: "did:pkh:002",
+      did: "did:key:002",
     },
     {
-      did: "did:pkh:003",
+      did: "did:key:003",
     },
   ];
   return (
