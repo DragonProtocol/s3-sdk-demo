@@ -17,6 +17,7 @@ const CeramicContext = createContext<{
   getProfileWithDid: (did: string) => Promise<any>;
   updateProfile: (name: string) => Promise<void>;
   connectUs3r: (chain?: AuthChain) => Promise<void>;
+  disconnect: () => Promise<void>;
   sessId: string;
   profile?: {
     name: string;
@@ -95,6 +96,12 @@ export const Us3rProfileProvider = ({
     }
   }, [getPersonalProfile]);
 
+  const disconnect = useCallback(async () => {
+    await us3rAuth.disconnect([profileComposeClient]);
+    setSessId("");
+    setProfile({ name: "" });
+  }, [profileComposeClient]);
+
   const updateProfile = useCallback(
     async (name: string) => {
       await updatePersonalProfile(name);
@@ -118,6 +125,7 @@ export const Us3rProfileProvider = ({
         updateProfile,
         connectUs3r,
         sessId,
+        disconnect,
         profile,
       }}
     >

@@ -89,4 +89,14 @@ export class Us3rAuth {
       item.setDID(session.did);
     });
   }
+
+  public async disconnect(composeClients: ComposeClient[]) {
+    localStorage.removeItem("did");
+    this.session = undefined;
+    this.valid = false;
+    const session = await DIDSession.fromSession();
+    composeClients.forEach((item) => {
+      item.setDID(session.did);
+    });
+  }
 }

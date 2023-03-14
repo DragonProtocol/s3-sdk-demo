@@ -1,6 +1,6 @@
 {
   "name": "@us3r-network/profile",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -25,7 +25,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@us3r-network/auth": "^0.1.0",
+    "@us3r-network/auth": "^0.1.1",
     "@ceramicnetwork/common": "^2.20.0",
     "@composedb/client": "^0.4.3",
     "@composedb/types": "^0.4.3",
