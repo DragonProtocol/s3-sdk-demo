@@ -1,5 +1,4 @@
 import { Routes, Route, Outlet } from "react-router-dom";
-import styled from "styled-components";
 
 import Profile from "./container/ProfilePage";
 
@@ -32,14 +31,12 @@ export default function App() {
 function Layout() {
   // useGAPageView();
   return (
-    <AppContainer>
+    <div className="flex flex-col">
       <Header />
 
-      <main>
+      <main className="grow">
         <Outlet />
       </main>
-    </AppContainer>
+    </div>
   );
 }
-
-const AppContainer = styled.div``;

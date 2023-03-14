@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import styled from "styled-components";
 import { useCallback, useEffect } from "react";
 
 import { useUs3rProfileContext } from "@us3r-network/profile";
@@ -27,7 +26,7 @@ export default function Header() {
   }, [authComposeClients]);
 
   return (
-    <div className="container max-w-5xl mx-auto sticky top-0 flex justify-between items-center h-20 border-b border-gray-500 px-5 bg-white">
+    <div className="bg-[#1b1e23] text-white container max-w-5xl mx-auto sticky top-0 flex justify-between items-center h-20 border-b border-gray-500 px-5 ">
       <Link to={"/"}>
         <div className="flex gap-2 items-end">
           <img src="/logo.png" alt="" className=" w-10 h-10" />
@@ -55,22 +54,24 @@ export default function Header() {
             </Link>
           </div>
         )) || (
-          <div>
+          <div className="flex gap-1">
             <button
               onClick={async () => {
                 await connectUs3r();
                 authComposeClients();
               }}
+              className="flex w-40 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-              login with metamask
+              Metamask
             </button>
             <button
               onClick={async () => {
                 await connectUs3r("phantom");
                 authComposeClients();
               }}
+              className="flex w-40 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-              login with phantom
+              Phantom
             </button>
           </div>
         )}
