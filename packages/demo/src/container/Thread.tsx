@@ -3,6 +3,8 @@ import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Author from "../components/Author";
+import Comment from "../components/Icons/Comment";
+import Favor from "../components/Icons/Favor";
 
 enum Tab {
   Comment = "Comment",
@@ -34,17 +36,20 @@ export default function ThreadPage() {
   const submitNewFavor = useCallback(async () => {
     if (!streamId) return;
     await createNewFavor({ threadId: streamId });
-  }, [createNewFavor, streamId]);
+    await getThreadInfo(streamId);
+  }, [createNewFavor, streamId, getThreadInfo]);
 
   const submitNewScore = useCallback(async () => {
     if (!streamId) return;
     await createNewScore({ threadId: streamId, text: "hehe", value: 10 });
-  }, [createNewScore, streamId]);
+    await getThreadInfo(streamId);
+  }, [createNewScore, streamId, getThreadInfo]);
 
   const submitNewVote = useCallback(async () => {
     if (!streamId) return;
     await createNewVote({ threadId: streamId, type: VoteType.UP_VOTE });
-  }, [createNewVote, streamId]);
+    await getThreadInfo(streamId);
+  }, [createNewVote, streamId, getThreadInfo]);
 
   useEffect(() => {
     if (!streamId) return;
@@ -57,7 +62,7 @@ export default function ThreadPage() {
 
   return (
     <div>
-      <div className="container max-w-5xl mx-auto mt-5 px-5">
+      <div className="container max-w-5xl mx-auto p-5  bg-[#14171A]">
         <div>
           {threadInfo?.creator.id && <Author did={threadInfo.creator.id} />}
         </div>
@@ -66,107 +71,49 @@ export default function ThreadPage() {
             dayjs(threadInfo!.date).format("YYYY-MM-DD HH:mm:ss")}
         </div>
         <div>{threadInfo?.url}</div>
-
-        <div className="mt-5 flex gap-5 shadow-sm">
-          {Object.values(Tab).map((item) => {
-            return (
-              <div
-                key={item.toString()}
-                className={`${
-                  tab === item ? "border-indigo-500" : "border-white"
-                } border-b-2 px-2 cursor-pointer`}
-                onClick={() => {
-                  setTab(item as Tab);
-                }}
-              >
-                {item === Tab.Comment && (
-                  <span className="mr-1">{threadInfo?.commentsCount}</span>
-                )}
-                {item === Tab.Favor && (
-                  <span className="mr-1">{threadInfo?.favorsCount}</span>
-                )}
-                {item === Tab.Score && (
-                  <span className="mr-1">{threadInfo?.scoresCount}</span>
-                )}
-                {item === Tab.Vote && (
-                  <span className="mr-1">{threadInfo?.votesCount}</span>
-                )}
-                <span>{item}</span>
-              </div>
-            );
-          })}
+      </div>
+      <div className="container max-w-5xl mx-auto mt-5 px-5">
+        <div className="flex justify-evenly items-center py-5">
+          <div
+            className="flex items-center gap-1 text-sm"
+            onClick={submitNewVote}
+          >
+            <span>👏</span> {threadInfo?.votesCount}
+          </div>
+          <span>|</span>
+          <div className="flex items-center gap-1 text-sm">
+            <span>
+              <Comment />
+            </span>
+            {threadInfo?.commentsCount}
+          </div>
+          <span>|</span>
+          <div
+            className="flex items-center gap-1 text-sm"
+            onClick={submitNewFavor}
+          >
+            <span>
+              <Favor />
+            </span>
+            {threadInfo?.favorsCount}
+          </div>
         </div>
+
+        <hr />
 
         <div className="flex gap-5 mt-5">
           <div>
             {threadInfo?.comments.edges.map((item) => {
               return (
-                <div key={item.node.id} className="my-2">
-                  <Author did={item.node.creator.id} />
-                  <p>{item.node.text}</p>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* {tab === Tab.Favor && (
-          <div>
-            {threadInfo?.favors.edges.map((item) => {
-              return (
-                <div key={item.node.id} className="my-2">
-                  <Author did={item.node.creator.id} />
-                </div>
-              );
-            })}
-            <button
-              onClick={submitNewFavor}
-              className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              NewFavor
-            </button>
-          </div>
-        )}
-
-        {tab === Tab.Score && (
-          <div>
-            {threadInfo?.scores.edges.map((item) => {
-              return (
-                <div key={item.node.id} className="my-2">
-                  <div className="flex gap-2">
-                    <span>{item.node.value}</span>
+                <div key={item.node.id} className="p-2 flex flex-col gap-1">
+                  <div className="flex justify-between">
                     <Author did={item.node.creator.id} />
                   </div>
-                  <p>{item.node.text}</p>
+                  <p className="text-sm">{item.node.text}</p>
                 </div>
               );
             })}
-            <button
-              onClick={submitNewScore}
-              className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              NewScore
-            </button>
           </div>
-        )}
-
-        {tab === Tab.Vote && (
-          <div>
-            {threadInfo?.votes.edges.map((item) => {
-              return (
-                <div key={item.node.id} className="my-2">
-                  <span>{item.node.type}</span>
-                  <Author did={item.node.creator.id} />
-                </div>
-              );
-            })}
-            <button
-              onClick={submitNewVote}
-              className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              NewVote
-            </button>
-          </div>
-        )} */}
         </div>
       </div>
 

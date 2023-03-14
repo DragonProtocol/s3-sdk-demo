@@ -1,6 +1,8 @@
 import Author from "./Author";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
+import Favor from "./Icons/Favor";
+import Comment from "./Icons/Comment";
 
 export default function ThreadCard({
   id,
@@ -49,18 +51,19 @@ export default function ThreadCard({
         )}
       </div>
       <div className="mt-2 flex gap-2">
+        <div className="flex items-center gap-1 border border-gray-500 rounded-md px-2">
+          <Favor />
+          <span>{favorsCount}</span>
+        </div>
+        <div className="flex items-center gap-1 border border-gray-500 rounded-md px-2">
+          <Comment /> <span>{commentsCount}</span>
+        </div>
         <span className="border border-gray-500 rounded-md px-2">
-          favors {favorsCount}
+          <span>👏</span> {votesCount}
         </span>
-        <span className="border border-gray-500 rounded-md px-2">
-          comments {commentsCount}
-        </span>
-        <span className="border border-gray-500 rounded-md px-2">
-          votes {votesCount}
-        </span>
-        <span className="border border-gray-500 rounded-md px-2">
+        {/* <span className="border border-gray-500 rounded-md px-2">
           scores {scoresCount}
-        </span>
+        </span> */}
       </div>
       <div className="flex justify-between mt-2">
         <div>{dayjs(date).format("YYYY-MM-DD HH:mm:ss")}</div>

@@ -22,9 +22,10 @@ export default function Author({ did }: { did: string }) {
   //   console.log("didProfile", did, didProfile?.genericProfile.name);
 
   return (
-    <div>
-      <span>{didProfile?.newGenericProfile?.name}</span>
-      <span style={{ marginLeft: "2px" }}>@{shortPubKey(did)}</span>
+    <div className="font-bold text-sm">
+      {(didProfile?.newGenericProfile?.name && (
+        <span>{didProfile?.newGenericProfile?.name}</span>
+      )) || <span>{shortPubKey(did)}</span>}
     </div>
   );
 }

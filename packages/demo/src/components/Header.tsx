@@ -34,19 +34,21 @@ export default function Header() {
         </div>
       </Link>
       <div className=" flex gap-3 items-center">
-        <div>
-          <Link
-            to={"/thread/create"}
-            className="flex w-40 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            CreateNewThread
-          </Link>
-        </div>
+        {sessId && (
+          <div>
+            <Link
+              to={"/thread/create"}
+              className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600  text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              CreateNewThread
+            </Link>
+          </div>
+        )}
         {(sessId && (
           <div>
             <Link
               to={"profile"}
-              className="flex w-40 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className="flex  items-center justify-center rounded-md border border-transparent bg-indigo-600  text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               {(profile?.name && <div>{profile?.name}</div>) || (
                 <span>{shortPubKey(sessId, 8)}</span>
@@ -60,7 +62,7 @@ export default function Header() {
                 await connectUs3r();
                 authComposeClients();
               }}
-              className="flex w-40 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className="flex  items-center justify-center rounded-md border border-transparent bg-indigo-600  text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               Metamask
             </button>
@@ -69,7 +71,7 @@ export default function Header() {
                 await connectUs3r("phantom");
                 authComposeClients();
               }}
-              className="flex w-40 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className="flex  items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               Phantom
             </button>
