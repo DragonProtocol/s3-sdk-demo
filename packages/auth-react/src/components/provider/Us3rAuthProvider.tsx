@@ -22,8 +22,11 @@ export interface Us3rAuthContextValue {
   setSession: (session: Us3rAuthSession) => void;
   logout: () => void;
 }
+
+const us3rAuthClient = new Us3rAuth();
+
 const defaultContextValue: Us3rAuthContextValue = {
-  us3rAuthClient: undefined,
+  us3rAuthClient: us3rAuthClient,
   session: undefined,
   setSession: () => {},
   logout: () => {},
@@ -49,15 +52,11 @@ export default function Us3rAuthProvider({
   authConfig,
   themeConfig,
 }: Us3rAuthProviderProps) {
-  const [us3rAuthClient, setUs3rAuthClient] =
-    useState<Us3rAuth | undefined>(undefined);
   const [session, setSession] = useState(us3rAuthClient?.session);
 
   useEffect(() => {
     (async () => {
-      const us3rAuthClient = new Us3rAuth();
       await us3rAuthClient.restoreFromLocal();
-      setUs3rAuthClient(us3rAuthClient);
       setSession(us3rAuthClient.session);
     })();
   }, []);
@@ -81,7 +80,7 @@ export default function Us3rAuthProvider({
       setSession,
       logout,
     }),
-    [us3rAuthClient, session, setSession, logout]
+    [session, setSession, logout]
   );
 
   return (
