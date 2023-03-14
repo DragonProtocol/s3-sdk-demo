@@ -1,7 +1,7 @@
-import { useAuthorizer } from "../provider/AuthorizerContext";
 import LoginWithAuthorizerButton from "../login-button/LoginWithAuthorizerButton";
 import Modal from "../modal/Modal";
 import { Flex } from "rebass/styled-components";
+import { useUs3rAuth } from "../provider/Us3rAuthProvider";
 
 export interface LoginModalProps {
   open: boolean;
@@ -9,7 +9,7 @@ export interface LoginModalProps {
 }
 
 function LoginModal({ open, onClose }: LoginModalProps) {
-  const { authorizers, lastAuthToolType } = useAuthorizer();
+  const { authorizers, lastAuthToolType } = useUs3rAuth();
   const newAuthorizers = authorizers.sort((a, b) => {
     if (a.authToolType === lastAuthToolType) {
       return -1;

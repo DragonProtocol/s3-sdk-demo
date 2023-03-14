@@ -1,4 +1,8 @@
 export default {
+  colors: {
+    metamaskWallet: "#F6851B",
+    phantomWallet: "#551FF4",
+  },
   fonts: {
     body: "system-ui, sans-serif",
     heading: "inherit",
@@ -17,8 +21,9 @@ export default {
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   sizes: {
     avatar: 32,
+    icon: 24,
   },
-  radius: {
+  radii: {
     default: 4,
     circle: 99999,
   },
@@ -49,7 +54,7 @@ export default {
     },
     loginLastText: {
       fontSize: 2,
-      color: "secondary",
+      color: "gray",
       fontWeight: "body",
     },
   },
@@ -59,8 +64,12 @@ export default {
       height: "avatar",
       borderRadius: "circle",
     },
-    modal: {
-      p: 2,
+    icon: {
+      width: "icon",
+      height: "icon",
+    },
+    modalContent: {
+      p: 3,
       bg: "background",
       boxShadow: "modal",
       borderRadius: "default",
@@ -74,6 +83,9 @@ export default {
       bg: "primary",
       borderRadius: "default",
       cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      gap: 2,
     },
     outline: {
       variant: "buttons.primary",

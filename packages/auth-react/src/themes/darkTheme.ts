@@ -2,6 +2,7 @@ import baseTheme from "./baseTheme";
 export default {
   ...baseTheme,
   colors: {
+    ...baseTheme?.colors,
     text: "#fff",
     background: "#000",
     primary: "#0cf",
@@ -9,7 +10,7 @@ export default {
     muted: "#111",
     gray: "#555",
     white: "#fff",
-    highlight: "hsla(205, 100%, 40%, 0.125)",
+
     metamaskWallet: "#F6851B",
     phantomWallet: "#551FF4",
   },

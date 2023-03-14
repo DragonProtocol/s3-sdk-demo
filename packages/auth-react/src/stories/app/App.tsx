@@ -4,6 +4,11 @@ import {
   AuthToolType,
   ThemeType,
 } from "@us3r-network/auth-react";
+import { Us3rProfileProvider } from "@us3r-network/profile";
+import { Us3rThreadProvider } from "@us3r-network/thread";
+
+const ceramicHost =
+  process.env.REACT_APP_CERAMIC_HOST || "http://13.215.254.225:7007";
 
 interface AppContextValue {
   theme: ThemeType;
@@ -21,14 +26,18 @@ const authToolTypes = [
 const App: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
   const [theme, setTheme] = React.useState<ThemeType>("light");
   return (
-    <AuthModalContext.Provider value={{ theme, setTheme }}>
-      <Us3rAuthProvider
-        authConfig={{ authToolTypes }}
-        themeConfig={{ themeType: theme }}
-      >
-        {children}
-      </Us3rAuthProvider>
-    </AuthModalContext.Provider>
+    <Us3rProfileProvider ceramicHost={ceramicHost}>
+      <Us3rThreadProvider ceramicHost={ceramicHost}>
+        <AuthModalContext.Provider value={{ theme, setTheme }}>
+          <Us3rAuthProvider
+            authConfig={{ authToolTypes }}
+            themeConfig={{ themeType: theme }}
+          >
+            {children}
+          </Us3rAuthProvider>
+        </AuthModalContext.Provider>
+      </Us3rThreadProvider>
+    </Us3rProfileProvider>
   );
 };
 

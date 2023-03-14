@@ -3,24 +3,18 @@ import { Text } from "rebass/styled-components";
 import { getUserDisplayName } from "../../utils";
 import UserAvatar from "../avatar/UserAvatar";
 import { useUs3rAuthModal } from "../provider/AuthModalContext";
-import { useUs3rAuth } from "../provider/Us3rAuthProvider";
 import { Button } from "rebass/styled-components";
+import { useUs3rProfileContext } from "@us3r-network/profile";
 
 export type LoginButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
 function LoginButton({ onClick, ...otherProps }: LoginButtonProps) {
-  const { session } = useUs3rAuth();
+  const { sessId, profile } = useUs3rProfileContext()!;
   const { openLoginModal } = useUs3rAuthModal();
-  const nameStr = getUserDisplayName(session);
+  const nameStr = getUserDisplayName(sessId, profile);
   return (
     <Button
       variant="primary"
-      sx={{
-        height: "48px",
-        display: "flex",
-        alignItems: "center",
-        gap: 2,
-      }}
       onClick={(e) => {
         if (onClick) {
           onClick(e);
@@ -31,18 +25,18 @@ function LoginButton({ onClick, ...otherProps }: LoginButtonProps) {
       className="us3r-LoginButton"
       {...otherProps}
     >
-      {session ? (
+      {sessId ? (
         <>
-          <UserAvatar
-            did={session.did.id}
-            className="us3r-LoginButton__avatar"
-          />
+          <UserAvatar did={sessId} className="us3r-LoginButton__avatar" />
           <Text className="us3r-LoginButton__text us3r-LoginButton__text--login">
             {nameStr}
           </Text>
         </>
       ) : (
-        <Text className="us3r-LoginButton__text us3r-LoginButton__text--logout">
+        <Text
+          variant={"heading"}
+          className="us3r-LoginButton__text us3r-LoginButton__text--logout"
+        >
           Login
         </Text>
       )}

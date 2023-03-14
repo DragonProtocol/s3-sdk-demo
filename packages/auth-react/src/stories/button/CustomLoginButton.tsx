@@ -5,9 +5,11 @@ import {
   UserAvatar,
 } from "@us3r-network/auth-react";
 import App from "../app/App";
+import { useUs3rProfileContext } from "@us3r-network/profile";
 
 const CustomLoginButton: React.VFC = () => {
-  const { session, logout } = useUs3rAuth();
+  const { sessId } = useUs3rProfileContext()!;
+  const { logout } = useUs3rAuth();
   const { openLoginModal } = useUs3rAuthModal();
 
   return (
@@ -18,18 +20,18 @@ const CustomLoginButton: React.VFC = () => {
         alignItems: "center",
       }}
       onClick={() => {
-        if (session) {
+        if (sessId) {
           logout();
         } else {
           openLoginModal();
         }
       }}
     >
-      {!!session && <UserAvatar did={session.did.id} />}
-      {!!session && <span>{session.id}</span>}
+      {!!sessId && <UserAvatar did={sessId} />}
+      {!!sessId && <span>{sessId}</span>}
 
       <span style={{ color: "blue" }}>
-        {session ? "click to logout" : "click to login"}
+        {sessId ? "click to logout" : "click to login"}
       </span>
     </button>
   );

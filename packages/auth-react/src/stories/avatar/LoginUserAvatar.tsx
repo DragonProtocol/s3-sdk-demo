@@ -1,10 +1,11 @@
 import React from "react";
-import { useUs3rAuth, UserAvatar } from "@us3r-network/auth-react";
+import { UserAvatar } from "@us3r-network/auth-react";
 import App from "../app/App";
+import { useUs3rProfileContext } from "@us3r-network/profile";
 
 const Avatar = () => {
-  const { session } = useUs3rAuth();
-  return <UserAvatar did={session?.did.id} title={session?.did.id} />;
+  const { sessId } = useUs3rProfileContext()!;
+  return <UserAvatar did={sessId} title={sessId} />;
 };
 
 const Page: React.VFC = () => {

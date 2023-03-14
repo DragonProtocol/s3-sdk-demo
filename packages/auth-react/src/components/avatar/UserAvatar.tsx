@@ -10,7 +10,7 @@ const getUserAvatarSrc = (did: string) =>
   `data:image/svg+xml;utf-8,${encodeURIComponent(multiavatar(did))}`;
 
 export default function UserAvatar({ did, ...otherProps }: UserAvatarProps) {
-  const defaultAvatarDid = did || "did:key:0";
+  const defaultAvatarDid = did || "did:pkh:0";
   return (
     <Image
       variant={"avatar"}

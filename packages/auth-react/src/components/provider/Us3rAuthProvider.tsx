@@ -8,27 +8,38 @@ import {
   useContext,
 } from "react";
 import { ThemeProvider } from "styled-components";
-import { Us3rAuth } from "@us3r-network/auth";
-import { removeSessionStorage } from "../../utils/storage";
+
 import { getTheme, Theme, ThemeType } from "../../themes";
-import { AuthToolType } from "../../authorizers";
+import {
+  Authorizer,
+  AuthToolType,
+  getAuthorizerBaseInfo,
+} from "../../authorizers";
 import ModalProvider from "./AuthModalContext";
-import AuthorizerProvider from "./AuthorizerContext";
-import type { Us3rAuthSession } from "../../utils";
+import { useUs3rProfileContext } from "@us3r-network/profile";
+import { useUs3rThreadContext } from "@us3r-network/thread";
+import {
+  getAuthLastFromStorage,
+  setAuthLastToStorage,
+} from "../../utils/storage";
 
 export interface Us3rAuthContextValue {
-  us3rAuthClient: Us3rAuth | undefined;
-  session: Us3rAuthSession | undefined;
-  setSession: (session: Us3rAuthSession) => void;
+  authorizers: Authorizer[];
+  lastAuthToolType: AuthToolType;
+  updateLastAuthorizer: (authToolType: AuthToolType) => void;
+  getAuthorizer: (authToolType: AuthToolType) => Maybe<Authorizer>;
+  loginWithAuthorizer: (authToolType: AuthToolType) => Promise<void>;
   logout: () => void;
 }
 
-const us3rAuthClient = new Us3rAuth();
+const authLast = getAuthLastFromStorage();
 
 const defaultContextValue: Us3rAuthContextValue = {
-  us3rAuthClient: us3rAuthClient,
-  session: undefined,
-  setSession: () => {},
+  authorizers: [],
+  lastAuthToolType: authLast,
+  updateLastAuthorizer: () => {},
+  getAuthorizer: () => undefined,
+  loginWithAuthorizer: () => Promise.resolve(),
   logout: () => {},
 };
 
@@ -52,43 +63,100 @@ export default function Us3rAuthProvider({
   authConfig,
   themeConfig,
 }: Us3rAuthProviderProps) {
-  const [session, setSession] = useState(us3rAuthClient?.session);
-
-  useEffect(() => {
-    (async () => {
-      await us3rAuthClient.restoreFromLocal();
-      setSession(us3rAuthClient.session);
-    })();
-  }, []);
-
-  const logout = useCallback(() => {
-    removeSessionStorage();
-    setSession(undefined);
-    if (us3rAuthClient) {
-      us3rAuthClient.session = undefined;
-      us3rAuthClient.valid = false;
-    }
-  }, [us3rAuthClient]);
-
   // TODO: 后期从控制台数据拿取authConfig
   const { authToolTypes } = authConfig;
 
+  const { us3rAuth, us3rAuthValid, connectUs3r, disconnect } =
+    useUs3rProfileContext()!;
+  const { threadComposeClient, relationsComposeClient } =
+    useUs3rThreadContext()!;
+
+  const authComposeClients = useCallback(() => {
+    if (us3rAuthValid && us3rAuth.valid) {
+      us3rAuth.authComposeClients([
+        threadComposeClient,
+        relationsComposeClient,
+      ]);
+    }
+  }, [relationsComposeClient, threadComposeClient, us3rAuth, us3rAuthValid]);
+
+  useEffect(() => {
+    authComposeClients();
+  }, [authComposeClients]);
+
+  const [authorizers, setAuthorizers] = useState<Authorizer[]>([]);
+  const [lastAuthToolType, setLastAuthToolType] =
+    useState<AuthToolType>(authLast);
+
+  useEffect(() => {
+    const authorizers =
+      authToolTypes?.map((authToolType) =>
+        getAuthorizerBaseInfo(authToolType)
+      ) || [];
+    setAuthorizers(authorizers);
+  }, [authToolTypes]);
+
+  const updateLastAuthorizer = useCallback(
+    (authToolType: AuthToolType) => {
+      setAuthLastToStorage(authToolType);
+      setLastAuthToolType(authToolType);
+    },
+    [setLastAuthToolType]
+  );
+
+  const getAuthorizer = useCallback(
+    (authToolType: AuthToolType) => {
+      return authorizers.find(
+        (authorizer) => authorizer.authToolType === authToolType
+      );
+    },
+    [authorizers]
+  );
+
+  const loginWithAuthorizer = useCallback(
+    async (authToolType: AuthToolType) => {
+      switch (authToolType) {
+        case AuthToolType.metamask_wallet:
+          await connectUs3r("metamask");
+          break;
+        case AuthToolType.phantom_wallet:
+          await connectUs3r("phantom");
+          break;
+        default:
+          throw Error("Unsupported authToolType");
+      }
+      updateLastAuthorizer(authToolType);
+    },
+    [connectUs3r, updateLastAuthorizer]
+  );
+
+  const logout = useCallback(async () => {
+    await disconnect();
+  }, [disconnect]);
+
   const providerValue = useMemo(
     () => ({
-      us3rAuthClient,
-      session,
-      setSession,
+      authorizers,
+      lastAuthToolType,
+      updateLastAuthorizer,
+      getAuthorizer,
+      loginWithAuthorizer,
       logout,
     }),
-    [session, setSession, logout]
+    [
+      authorizers,
+      lastAuthToolType,
+      updateLastAuthorizer,
+      getAuthorizer,
+      loginWithAuthorizer,
+      logout,
+    ]
   );
 
   return (
     <Us3rAuthContext.Provider value={providerValue}>
       <ThemeProvider theme={getTheme(themeConfig)}>
-        <AuthorizerProvider authToolTypes={authToolTypes ?? []}>
-          <ModalProvider>{children}</ModalProvider>
-        </AuthorizerProvider>
+        <ModalProvider>{children}</ModalProvider>
       </ThemeProvider>
     </Us3rAuthContext.Provider>
   );

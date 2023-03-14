@@ -3,7 +3,7 @@ import styled, { StyledComponentPropsWithRef } from "styled-components";
 import { Button, Text, Image } from "rebass//styled-components";
 import { AuthToolType } from "../../authorizers";
 import { useUs3rAuthModal } from "../provider/AuthModalContext";
-import { useAuthorizer } from "../provider/AuthorizerContext";
+import { useUs3rAuth } from "../provider/Us3rAuthProvider";
 
 export type LoginWithAuthorizerButtonProps =
   StyledComponentPropsWithRef<"button"> & {
@@ -16,21 +16,17 @@ export default function LoginWithAuthorizerButton({
   ...otherProps
 }: LoginWithAuthorizerButtonProps) {
   const { getAuthorizer, lastAuthToolType, loginWithAuthorizer } =
-    useAuthorizer();
+    useUs3rAuth();
   const { loginModalOpen, closeLoginModal } = useUs3rAuthModal();
   const authorizer = getAuthorizer(authToolType);
+  const [loading, setLoading] = useState(false);
+
   if (!authorizer) return null;
   const { name, iconUrl, buttonVariant } = authorizer;
-  const [loading, setLoading] = useState(false);
 
   return (
     <Button
       variant={buttonVariant}
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        gap: 2,
-      }}
       onClick={() => {
         setLoading(true);
         loginWithAuthorizer(authToolType)
@@ -45,7 +41,8 @@ export default function LoginWithAuthorizerButton({
       className="us3r-LoginWithAuthorizerButton"
       {...otherProps}
     >
-      <AuthorizerIcon
+      <Image
+        variant={"icon"}
         src={iconUrl}
         className="us3r-LoginWithAuthorizerButton__icon"
       />
@@ -70,8 +67,3 @@ export default function LoginWithAuthorizerButton({
     </Button>
   );
 }
-
-const AuthorizerIcon = styled(Image)`
-  width: 24px;
-  height: 24px;
-`;

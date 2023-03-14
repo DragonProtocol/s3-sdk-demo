@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Text } from "rebass/styled-components";
+import { Box, Button, Flex, Text } from "rebass/styled-components";
 import styled from "styled-components";
 
 const ModalOverlay = styled(Box)<{
@@ -30,22 +30,6 @@ const ModalContent = styled(Box)<{
   visibility: ${(props) => (props.isOpen ? "visible" : "hidden")};
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out,
     visibility 0.3s ease-in-out;
-`;
-
-const ModalHeader = styled(Box)`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  gap: 20px;
-`;
-
-const ModalTitle = styled(Text)`
-  color: ${(props) => props.theme.colors.text};
-  font-weight: 500;
-  font-size: 24px;
-  margin: 0;
-  flex: 1;
 `;
 
 const ModalCloseButton = styled(Button)`
@@ -127,21 +111,27 @@ const Modal = ({
       }}
     >
       <ModalContent
-        variant={"modal"}
+        variant={"modalContent"}
         className={`Us3r-Modal__content ${contentClassName ?? ""}`}
         isOpen={isOpen}
         onClick={(e) => e.stopPropagation()}
       >
         {showHeader && (
-          <ModalHeader
+          <Flex
+            alignItems={"center"}
             className={`Us3r-Modal__header ${headerClassName ?? ""}`}
           >
             {showTitle && title && (
-              <ModalTitle
+              <Text
+                variant={"heading"}
+                sx={{
+                  flex: 1,
+                  fontSize: 3,
+                }}
                 className={`Us3r-Modal__title ${titleClassName ?? ""}`}
               >
                 {title}
-              </ModalTitle>
+              </Text>
             )}
 
             {showCloseButton && (
@@ -152,12 +142,17 @@ const Modal = ({
                 {closeButtonLabel ?? "✖"}
               </ModalCloseButton>
             )}
-          </ModalHeader>
+          </Flex>
         )}
 
-        <ModalBody className={`Us3r-Modal__body ${bodyClassName ?? ""}`}>
+        <Box
+          sx={{
+            mt: 3,
+          }}
+          className={`Us3r-Modal__body ${bodyClassName ?? ""}`}
+        >
           {children}
-        </ModalBody>
+        </Box>
       </ModalContent>
     </ModalOverlay>
   );
