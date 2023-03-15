@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "jsx": "react-jsx",
+    "paths": {
+      "@us3r-network/authkit": ["./src/index.ts"]
+    }
+  },
+  "files": ["./global.d.ts", "./image.d.ts"],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/", "dist/**/*"]
+}
