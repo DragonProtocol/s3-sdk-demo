@@ -28,5 +28,24 @@ function App() {
 ```tsx
 ...
 const { sessId, profile, connectUs3r, updateProfile, getProfileWithDid } = useUs3rProfileContext()!;
+
+...
+  <button
+    onClick={async () => {
+      await connectUs3r();
+      authComposeClients();
+    }}
+  >
+    login with metamask
+  </button>
+  <button
+    onClick={async () => {
+      await connectUs3r("phantom");
+      authComposeClients();
+    }}
+  >
+    login with phantom
+  </button>
+...
 ...
 ```

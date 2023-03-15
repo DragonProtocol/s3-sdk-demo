@@ -1,3 +1,4 @@
+import { DID } from "dids";
 import { DIDSession } from "did-session";
 import { SolanaWebAuth, getAccountIdByNetwork } from "@didtools/pkh-solana";
 import { EthereumWebAuth, getAccountId } from "@didtools/pkh-ethereum";
@@ -87,6 +88,16 @@ export class Us3rAuth {
     const session = this.session;
     composeClients.forEach((item) => {
       item.setDID(session.did);
+    });
+  }
+
+  public async disconnect(composeClients: ComposeClient[]) {
+    localStorage.removeItem("did");
+    this.session = undefined;
+    this.valid = false;
+    const did = new DID();
+    composeClients.forEach((item) => {
+      item.setDID(did);
     });
   }
 }
