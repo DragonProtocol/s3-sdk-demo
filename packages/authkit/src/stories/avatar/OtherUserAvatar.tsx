@@ -1,5 +1,5 @@
 import React from "react";
-import { UserAvatar } from "@us3r-network/auth-react";
+import { UserAvatar } from "@us3r-network/authkit";
 import App from "../app/App";
 
 const Avatar: React.VFC = () => {

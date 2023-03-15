@@ -3,7 +3,7 @@ import {
   useUs3rAuth,
   useUs3rAuthModal,
   UserAvatar,
-} from "@us3r-network/auth-react";
+} from "@us3r-network/authkit";
 import App from "../app/App";
 import { useUs3rProfileContext } from "@us3r-network/profile";
 

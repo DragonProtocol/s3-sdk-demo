@@ -1,5 +1,5 @@
 {
-  "name": "@us3r-network/auth-react",
+  "name": "@us3r-network/authkit",
   "version": "0.1.0",
   "description": "",
   "main": "dist/cjs/index.js",

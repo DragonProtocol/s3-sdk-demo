@@ -1,4 +1,4 @@
-# @us3r-network/auth-react
+# @us3r-network/authkit
 
 ## Components
 

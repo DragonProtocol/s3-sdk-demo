@@ -4,7 +4,7 @@
     "outDir": "./dist",
     "jsx": "react-jsx",
     "paths": {
-      "@us3r-network/auth-react": ["./src/index.ts"]
+      "@us3r-network/authkit": ["./src/index.ts"]
     }
   },
   "files": ["./global.d.ts", "./image.d.ts"],

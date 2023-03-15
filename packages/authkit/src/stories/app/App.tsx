@@ -3,7 +3,7 @@ import {
   Us3rAuthProvider,
   AuthToolType,
   ThemeType,
-} from "@us3r-network/auth-react";
+} from "@us3r-network/authkit";
 import { Us3rProfileProvider } from "@us3r-network/profile";
 import { Us3rThreadProvider } from "@us3r-network/thread";
 

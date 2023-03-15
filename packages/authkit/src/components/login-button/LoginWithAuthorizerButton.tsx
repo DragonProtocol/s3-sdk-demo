@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styled, { StyledComponentPropsWithRef } from "styled-components";
+import { StyledComponentPropsWithRef } from "styled-components";
 import { Button, Text, Image } from "rebass//styled-components";
 import { AuthToolType } from "../../authorizers";
 import { useUs3rAuthModal } from "../provider/AuthModalContext";

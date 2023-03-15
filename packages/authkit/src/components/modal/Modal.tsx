@@ -49,9 +49,6 @@ const ModalCloseButton = styled(Button)`
   }
 `;
 
-const ModalBody = styled.div`
-  padding: 16px;
-`;
 type ModalProps = {
   children: React.ReactNode;
   isOpen: boolean;
@@ -127,6 +124,7 @@ const Modal = ({
                 sx={{
                   flex: 1,
                   fontSize: 3,
+                  color: "text",
                 }}
                 className={`Us3r-Modal__title ${titleClassName ?? ""}`}
               >
@@ -147,7 +145,7 @@ const Modal = ({
 
         <Box
           sx={{
-            mt: 3,
+            mt: 4,
           }}
           className={`Us3r-Modal__body ${bodyClassName ?? ""}`}
         >

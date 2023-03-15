@@ -1,7 +1,4 @@
-import {
-  AuthToolType,
-  LoginWithAuthorizerButton,
-} from "@us3r-network/auth-react";
+import { AuthToolType, LoginWithAuthorizerButton } from "@us3r-network/authkit";
 import App from "../app/App";
 
 const Page: React.VFC = () => {

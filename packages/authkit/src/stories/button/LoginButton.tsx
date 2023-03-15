@@ -1,4 +1,4 @@
-import { LoginButton } from "@us3r-network/auth-react";
+import { LoginButton } from "@us3r-network/authkit";
 import App from "../app/App";
 const Page: React.VFC = () => {
   return (

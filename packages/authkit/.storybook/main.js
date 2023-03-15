@@ -12,7 +12,7 @@ module.exports = {
     builder: "@storybook/builder-webpack5",
   },
   webpackFinal: async (config) => {
-    config.resolve.alias["@us3r-network/auth-react"] = path.resolve(
+    config.resolve.alias["@us3r-network/authkit"] = path.resolve(
       __dirname,
       "../src/index.ts"
     );

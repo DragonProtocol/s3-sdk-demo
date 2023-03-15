@@ -1,4 +1,4 @@
-import { useUs3rAuthModal } from "@us3r-network/auth-react";
+import { useUs3rAuthModal } from "@us3r-network/authkit";
 import App, { useAppContext } from "../app/App";
 
 const TestLoginModal = () => {
