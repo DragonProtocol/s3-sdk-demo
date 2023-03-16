@@ -6,11 +6,12 @@ import { useUs3rProfileContext } from "@us3r-network/profile";
 import { useUs3rAuthModal } from "../provider/AuthModalContext";
 
 const CommentContainer = styled(Box)`
-  background-color: #1b1e23;
+  background-color: #14171a;
   display: flex;
   align-items: center;
   gap: 1rem;
   border-radius: 0.5rem;
+  padding: 10px;
 `;
 
 const CommentInput = styled.input`
@@ -21,12 +22,30 @@ const CommentInput = styled.input`
   background: none;
   border: none;
   outline: none;
-  padding: 0 0.5rem;
   color: #fff;
 `;
 
 const SubmitBtn = styled(Button)`
   background: none;
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  gap: 4px;
+  width: 95px;
+  height: 32px;
+
+  background: #1a1e23;
+  border: 1px solid #39424c;
+  border-radius: 12px;
+
+  > span {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    text-align: center;
+
+    color: #718096;
+  }
 `;
 
 export default function CommentSubmit({
@@ -57,6 +76,7 @@ export default function CommentSubmit({
         }}
       >
         <Send />
+        <span>Comment</span>
       </SubmitBtn>
     </CommentContainer>
   );

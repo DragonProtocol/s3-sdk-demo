@@ -55,8 +55,8 @@ export default function CommentCard({
   date,
 }: {
   text: string;
-  name: string;
   did: string;
+  name?: string;
   date?: string;
 }) {
   return (
