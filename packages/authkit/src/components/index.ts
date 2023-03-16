@@ -11,3 +11,4 @@ export { default as LoginButton } from "./login-button/LoginButton";
 export { default as LoginWithAuthorizerButton } from "./login-button/LoginWithAuthorizerButton";
 
 export { default as CommentSubmit } from "./comment/CommentSubmit";
+export { default as CommentCard } from "./comment/CommentCard";

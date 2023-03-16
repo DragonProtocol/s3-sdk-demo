@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import { Box, Button, Flex, Text } from "rebass/styled-components";
+import { Box, Button } from "rebass/styled-components";
 
 const CommentContainer = styled(Box)`
   background-color: #1b1e23;
