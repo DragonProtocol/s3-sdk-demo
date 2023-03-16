@@ -1,6 +1,9 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { Box, Button } from "rebass/styled-components";
+import { useUs3rProfileContext } from "@us3r-network/profile";
+
+import { useUs3rAuthModal } from "../provider/AuthModalContext";
 
 const CommentContainer = styled(Box)`
   background-color: #1b1e23;
@@ -33,6 +36,8 @@ export default function CommentSubmit({
   submitAction: (comment: string) => void;
 }) {
   const [commentText, setCommentText] = useState("");
+  const { sessId } = useUs3rProfileContext()!;
+  const { openLoginModal } = useUs3rAuthModal();
   return (
     <CommentContainer {...otherProps}>
       <CommentInput
@@ -42,7 +47,15 @@ export default function CommentSubmit({
           setCommentText(e.target.value);
         }}
       />
-      <SubmitBtn onClick={() => submitAction(commentText)}>
+      <SubmitBtn
+        onClick={() => {
+          if (!sessId) {
+            openLoginModal();
+            return;
+          }
+          submitAction(commentText);
+        }}
+      >
         <Send />
       </SubmitBtn>
     </CommentContainer>
