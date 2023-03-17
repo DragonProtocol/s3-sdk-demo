@@ -52,7 +52,7 @@ export default function CommentSubmit({
   submitAction,
   ...otherProps
 }: {
-  submitAction: (comment: string) => void;
+  submitAction: (comment: string) => Promise<void>;
 }) {
   const [commentText, setCommentText] = useState("");
   const { sessId } = useUs3rProfileContext()!;
@@ -67,12 +67,13 @@ export default function CommentSubmit({
         }}
       />
       <SubmitBtn
-        onClick={() => {
+        onClick={async () => {
           if (!sessId) {
             openLoginModal();
             return;
           }
-          submitAction(commentText);
+          await submitAction(commentText);
+          setCommentText("");
         }}
       >
         <Send />

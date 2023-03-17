@@ -53,7 +53,7 @@ export default function Profile() {
 
       getPersonalFavorList({})
         .then((data) => {
-          setFavors(data.edges);
+          if (data) setFavors(data.edges);
         })
         .catch(console.error);
       getPersonalCommentList({})
@@ -63,12 +63,12 @@ export default function Profile() {
         .catch(console.error);
       getPersonalScoreList({})
         .then((data) => {
-          setScores(data.edges);
+          if (data) setScores(data.edges);
         })
         .catch(console.error);
       getPersonalVoteList({})
         .then((data) => {
-          setVotes(data.edges);
+          if (data) setVotes(data.edges);
         })
         .catch(console.error);
     }
