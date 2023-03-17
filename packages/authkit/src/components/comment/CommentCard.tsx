@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { Box, Text } from "rebass/styled-components";
 import UserAvatar from "../avatar/UserAvatar";
+import { useUs3rProfileContext } from "@us3r-network/profile";
+import { useEffect, useState } from "react";
 
 const CommentContainer = styled(Box)`
   display: flex;
@@ -64,11 +66,42 @@ export default function CommentCard({
       <CommentUserAvatar did={did} />
       <CommentContent>
         <CommentContentHeader>
-          <NicknameText>{name || did || "did:pkh:0"}</NicknameText>
+          <Author did={did} name={name} />
           {date && <DateText>{date}</DateText>}
         </CommentContentHeader>
         <ContentText>{text}</ContentText>
       </CommentContent>
     </CommentContainer>
   );
+}
+
+function Author({ did, name }: { did: string; name?: string }) {
+  const { getProfileWithDid } = useUs3rProfileContext()!;
+  const [didProfile, setDidProfile] =
+    useState<{
+      newGenericProfile?: {
+        name: string;
+      };
+    }>();
+  useEffect(() => {
+    if (name) return;
+    getProfileWithDid(did)
+      .then((data) => {
+        setDidProfile(data);
+      })
+      .catch(console.error);
+  }, [did, getProfileWithDid]);
+
+  return (
+    <NicknameText>
+      {name ||
+        didProfile?.newGenericProfile?.name ||
+        shortPubKey(did) ||
+        "did:pkh:0"}
+    </NicknameText>
+  );
+}
+
+function shortPubKey(key: string, len = 4) {
+  return key.slice(0, len) + "..".repeat(len / 4) + key.slice(-len);
 }
