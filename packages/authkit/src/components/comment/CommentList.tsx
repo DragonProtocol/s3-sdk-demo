@@ -64,33 +64,41 @@ export default function CommentList({ threadId }: { threadId: string }) {
     setMounted(true);
   }, []);
 
+  const fetchThreadInfo = useCallback(
+    async (threadId: string) => {
+      try {
+        const data = await getThreadInfo(threadId);
+        setThreadInfo(data);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [getThreadInfo]
+  );
+
   useEffect(() => {
     if (!threadId) return;
     if (!mounted) return;
-    getThreadInfo(threadId)
-      .then((data) => {
-        setThreadInfo(data);
-      })
-      .catch(console.error);
+    fetchThreadInfo(threadId);
   }, [getThreadInfo, threadId, mounted]);
 
   const submitNewComment = useCallback(
     async (commentText: string) => {
       await createNewComment({ text: commentText, threadId: threadId });
-      await getThreadInfo(threadId);
+      await fetchThreadInfo(threadId);
     },
-    [createNewComment, threadId, getThreadInfo]
+    [createNewComment, threadId, fetchThreadInfo]
   );
 
   const submitNewFavor = useCallback(async () => {
     await createNewFavor({ threadId: threadId });
-    await getThreadInfo(threadId);
-  }, [createNewFavor, threadId, getThreadInfo]);
+    await fetchThreadInfo(threadId);
+  }, [createNewFavor, threadId, fetchThreadInfo]);
 
   const submitNewVote = useCallback(async () => {
     await createNewVote({ threadId: threadId, type: VoteType.UP_VOTE });
-    await getThreadInfo(threadId);
-  }, [createNewVote, threadId, getThreadInfo]);
+    await fetchThreadInfo(threadId);
+  }, [createNewVote, threadId, fetchThreadInfo]);
 
   return (
     <CommentListContainer>
@@ -112,8 +120,8 @@ export default function CommentList({ threadId }: { threadId: string }) {
       </CountBox>
 
       <CommentSubmit
-        submitAction={(text) => {
-          submitNewComment(text);
+        submitAction={async (text) => {
+          await submitNewComment(text);
         }}
       />
       <ListBox>
