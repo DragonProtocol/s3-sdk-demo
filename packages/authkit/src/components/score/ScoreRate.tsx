@@ -1,10 +1,8 @@
-import styled from "styled-components"
-import { Box, Text } from "rebass/styled-components"
-import { Rate, Progress } from "antd"
+import styled from 'styled-components'
+import { Box } from 'rebass/styled-components'
+import { Rate, RateProps } from 'antd'
 
-const _ScoreCount = 5
-
-export default function ScoreRate(props) {
+export default function ScoreRate(props: RateProps) {
   return (
     <ScoreRateContainer>
       <Rate {...props} />

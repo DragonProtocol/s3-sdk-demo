@@ -1,35 +1,36 @@
-import styled from "styled-components"
-import { Box, Text } from "rebass/styled-components"
-import UserAvatar from "../avatar/UserAvatar"
-import ScoreRate from "./ScoreRate"
+import styled from 'styled-components'
+import { Box, Text } from 'rebass/styled-components'
+import UserAvatar from '../avatar/UserAvatar'
+import ScoreRate from './ScoreRate'
 
 export default function ReviewScoreCrad({
-  text,
-  name,
+  score,
+  comment,
   did,
+  name,
   date,
+  scoreCount,
 }: {
-  text: string
+  score: number
+  comment: string
   did: string
-  name?: string
+  name: string
   date?: string
+  scoreCount?: number
 }) {
   return (
     <ReviewScoreContainer>
-      <ScoreRate disabled defaultValue={4} count={5} />
-      <ReviewScoreComment>
-        The Alpha: Art Gobblers, the NFT project brainchild of Rick & Morty
-        co-creator Justin Roiland and Web3 firm Paradigm,
-      </ReviewScoreComment>
+      <ScoreRate disabled defaultValue={score} count={scoreCount || 5} />
+      <ReviewScoreComment>{comment}</ReviewScoreComment>
       <ReviewScoreBottom>
         <UserInfoBox>
           <ReviewScoreUserAvatar did={did} />
           <UserInfo>
-            <div className="name">Nicole</div>
+            <div className="name">{name}</div>
             <div>1000</div>
           </UserInfo>
         </UserInfoBox>
-        <ScoreDate>12 Jan 2023</ScoreDate>
+        {date && <ScoreDate>{date}</ScoreDate>}
       </ReviewScoreBottom>
     </ReviewScoreContainer>
   )

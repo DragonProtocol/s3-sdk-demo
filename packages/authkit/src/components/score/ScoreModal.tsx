@@ -1,47 +1,72 @@
-import LoginWithAuthorizerButton from "../login-button/LoginWithAuthorizerButton"
-import { Flex } from "rebass/styled-components"
-import styled from "styled-components"
+import { useState } from 'react'
 
-import Modal from "../modal/Modal"
-import UserAvatar from "../avatar/UserAvatar"
-import ScoreRate from "./ScoreRate"
+import { Flex, Button } from 'rebass/styled-components'
+import styled from 'styled-components'
+import { Input } from 'antd'
 
-// import { useUs3rAuth } from "../provider/Us3rAuthProvider";
+import Modal from '../modal/Modal'
+import UserAvatar from '../avatar/UserAvatar'
+import ScoreRate from './ScoreRate'
+
+const { TextArea } = Input
 
 export interface ScoreModal {
   open: boolean
   onClose: () => void
+  submitAction: ({ comment, score }: { comment: string; score: number }) => void
+  did: string
 }
 
-function ScoreModal({ open, onClose }: ScoreModal) {
-  //   const { authorizers, lastAuthToolType } = useUs3rAuth();
+function ScoreModal({ open, onClose, did, submitAction }: ScoreModal) {
+  const [score, setScore] = useState(0)
+  const [comment, setComment] = useState('')
 
   return (
-    <Modal title={"Rating & Review"} isOpen={open} onClose={onClose}>
-      <Flex
-        sx={{
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 3,
-        }}
-        className="us3r-ScoreModal__options"
+    <ScoreModalWrapper>
+      <Modal
+        title={'Rating & Review'}
+        isOpen={open}
+        onClose={onClose}
+        contentClassName="us3r-ScoreModal__content"
       >
-        <ReviewScoreUserAvatar did={""} />
-        <ScoreRate disabled defaultValue={4} count={5} />
-        <AuthProcessModalBtns className="signature-btns">
-          <CloseBtn
-            //   onClick={() => closeModal()}
-            className="signature-btn-cancel"
+        <Flex
+          sx={{
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 3,
+          }}
+          className="us3r-ScoreModal__options"
+        >
+          <ReviewScoreUserAvatar did={did} />
+          <ScoreRate value={score} count={5} onChange={setScore} />
+          <TextArea
+            maxLength={140}
+            value={comment}
+            style={{ width: '100%', height: 160, resize: 'none' }}
+            onChange={(e) => setComment(e?.target?.value)}
+            placeholder="Comment"
+          />
+          <Flex
+            sx={{
+              justifyContent: 'space-between',
+              columnGap: '10px',
+              width: '100%',
+            }}
           >
-            Cancel
-          </CloseBtn>
-
-          <RetryBtn onClick={() => {}} className="signature-btn-retry">
-            Retry
-          </RetryBtn>
-        </AuthProcessModalBtns>
-      </Flex>
-    </Modal>
+            <CloseBtn variant="outline" mr={2} onClick={onClose}>
+              Cancel
+            </CloseBtn>
+            <SubmitBtn
+              onClick={() => {
+                submitAction({ comment, score })
+              }}
+            >
+              Submit
+            </SubmitBtn>
+          </Flex>
+        </Flex>
+      </Modal>
+    </ScoreModalWrapper>
   )
 }
 export default ScoreModal
@@ -50,17 +75,45 @@ const ReviewScoreUserAvatar = styled(UserAvatar)`
   width: 120px;
   height: 120px;
 `
-const AuthProcessModalBtns = styled.div`
-  display: flex;
-  justify-content: end;
-  align-items: center;
-  gap: 24px;
+const ScoreModalWrapper = styled.div`
+  .us3r-ScoreModal__content {
+    background: #1a1e23;
+
+    .Us3r-Modal__title,
+    .Us3r-Modal__close {
+      color: white;
+    }
+  }
+
+  .ant-input {
+    background: transparent;
+    color: #718096;
+    border: 1px solid #39424c;
+    border-radius: 12px;
+    ::placeholder {
+      color: #718096;
+      opacity: 1;
+    }
+  }
 `
-const CloseBtn = styled.div`
-  width: 120px;
-  height: 48px;
+const CloseBtn = styled(Button)`
+  flex-grow: 1;
+  border: 1px solid #39424c;
+  box-shadow: none;
+  border-radius: 12px;
+  font-weight: normal;
+  color: #718096;
+  justify-content: center;
+
+  height: 40px;
 `
-const RetryBtn = styled.div`
-  width: 120px;
-  height: 48px;
+const SubmitBtn = styled(Button)`
+  flex-grow: 1;
+  border-radius: 12px;
+  font-weight: normal;
+  color: black;
+  background: white;
+  justify-content: center;
+
+  height: 40px;
 `

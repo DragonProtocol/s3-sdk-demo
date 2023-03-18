@@ -1,27 +1,31 @@
-import styled from "styled-components"
-import { Box, Text } from "rebass/styled-components"
-import { Rate, Progress } from "antd"
+import styled from 'styled-components'
+import { Box, Text } from 'rebass/styled-components'
+import { Rate, Progress } from 'antd'
 
-import ScoreRate from "./ScoreRate"
+import { useUs3rProfileContext } from '@us3r-network/profile'
+import { useUs3rAuthModal } from '../provider/AuthModalContext'
+
+import ScoreRate from './ScoreRate'
 
 const _ScoreCount = 5
 
-export default function ScoreLine({
-  text,
-  name,
-  did,
-  date,
-}: {
-  text: string
-  did: string
-  name?: string
-  date?: string
-}) {
-    // TODO: need login
+export default function ScoreLine({ onRating }: { onRating: () => void }) {
+  const { sessId } = useUs3rProfileContext()!
+  const { openLoginModal } = useUs3rAuthModal()!
+
   return (
     <ScoreLineContainer>
       <ScoreRate disabled defaultValue={0} count={_ScoreCount} />
-      <RatingButton>
+      <RatingButton
+        onClick={() => {
+          if (!sessId) {
+            openLoginModal()
+            return
+          }
+
+          onRating?.()
+        }}
+      >
         <svg
           className="rating-svg"
           viewBox="0 0 1024 1024"
@@ -58,7 +62,7 @@ const RatingButton = styled(Box)`
 
   color: #718096;
 
-  .rating-svg{
+  .rating-svg {
     margin-right: 5px;
   }
 `

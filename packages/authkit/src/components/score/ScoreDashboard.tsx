@@ -5,33 +5,33 @@ import { Rate, Progress } from "antd"
 const _ScoreCount = 5
 
 export default function ScoreDashboard({
-  text,
-  name,
-  did,
-  date,
+  score,
+  scoreCount = _ScoreCount,
+  scoreTotal,
+  scoreRankPercents
 }: {
-  text: string
-  did: string
-  name?: string
-  date?: string
+  score: number,
+  scoreCount: number,
+  scoreTotal?: string,
+  scoreRankPercents: []
 }) {
   return (
     <ScoreDashboardContainer>
       <ScoreBox>
         <ScoreText>
-          <Score>4.5</Score>
-          <ScoreTotal>/{_ScoreCount}.0</ScoreTotal>
+          <Score>{score || 0}</Score>
+          <ScoreCount>/{scoreCount}</ScoreCount>
         </ScoreText>
-        <Rate disabled defaultValue={2} count={_ScoreCount} />
-        <ScoreCount>1,244 global ratings</ScoreCount>
+        <Rate disabled defaultValue={score} count={scoreCount} />
+        {scoreTotal && <ScoreTotal>{scoreTotal} global ratings</ScoreTotal>}
       </ScoreBox>
       <ScoreRank>
-        {Array.from({ length: _ScoreCount }, (_, i) => i + 1).reverse().map(
-          (counter) => (
+        {Array.from({ length: scoreCount }, (_, i) => i + 1).reverse().map(
+          (counter,index) => (
             <ScoreRankItem key={`score_${counter}`}>
               <span className="score-prefix">{counter} star</span>
               <Progress
-                percent={50}
+                percent={scoreRankPercents?.[index] || 0}
                 status="active"
                 strokeColor="#CF9523"
                 trailColor="#1B1E23"
@@ -116,7 +116,7 @@ const Score = styled(Text)`
   text-align: center;
 `
 
-const ScoreTotal = styled(Text)`
+const ScoreCount = styled(Text)`
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
@@ -125,7 +125,7 @@ const ScoreTotal = styled(Text)`
   /* opacity: 0.8; */
 `
 
-const ScoreCount = styled(Text)`
+const ScoreTotal = styled(Text)`
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
