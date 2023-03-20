@@ -125,9 +125,10 @@ export default function Us3rAuthProvider({
         default:
           throw Error("Unsupported authToolType");
       }
+      authComposeClients();
       updateLastAuthorizer(authToolType);
     },
-    [connectUs3r, updateLastAuthorizer]
+    [connectUs3r, updateLastAuthorizer, authComposeClients]
   );
 
   const logout = useCallback(async () => {
