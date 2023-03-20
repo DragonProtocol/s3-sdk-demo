@@ -1,7 +1,8 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import ExampleScoreDashboard from "./score/ScoreDashboard";
 import ExampleScoreLine from "./score/ScoreLine";
-import ExampleReviewScoreCrad from "./score/ReviewScoreCrad";
+import ExampleReviewScoreCard from "./score/ReviewScoreCard";
+import ExampleReviewScoreCardList from "./score/ReviewScoreCardList";
 import ExampleScoreModal from "./score/ScoreModal";
 
 
@@ -23,12 +24,17 @@ const Template2: ComponentStory<typeof ExampleScoreLine> = (args) => (
 );
 export const ScoreLine = Template2.bind({});
 
-const Template3: ComponentStory<typeof ExampleReviewScoreCrad> = (args) => (
-  <ExampleReviewScoreCrad {...args} />
+const Template3: ComponentStory<typeof ExampleReviewScoreCard> = (args) => (
+  <ExampleReviewScoreCard {...args} />
 );
 export const ReviewScoreCrad = Template3.bind({});
 
-const Template4: ComponentStory<typeof ExampleScoreModal> = (args) => (
+const Template4: ComponentStory<typeof ExampleReviewScoreCardList> = (args) => (
+  <ExampleReviewScoreCardList {...args} />
+);
+export const ReviewScoreCardList = Template4.bind({});
+
+const Template5: ComponentStory<typeof ExampleScoreModal> = (args) => (
   <ExampleScoreModal {...args} />
 );
-export const ScoreModal = Template4.bind({});
+export const ScoreModal = Template5.bind({});

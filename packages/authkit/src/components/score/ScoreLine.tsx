@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Box, Text } from 'rebass/styled-components'
+import { Box, BoxProps } from 'rebass/styled-components'
 import { Rate, Progress } from 'antd'
 
 import { useUs3rProfileContext } from '@us3r-network/profile'
@@ -9,12 +9,15 @@ import ScoreRate from './ScoreRate'
 
 const _ScoreCount = 5
 
-export default function ScoreLine({ onRating }: { onRating: () => void }) {
+export default function ScoreLine({
+  onRating,
+  ...otherProps
+}: { onRating: () => void } & BoxProps) {
   const { sessId } = useUs3rProfileContext()!
   const { openLoginModal } = useUs3rAuthModal()!
 
   return (
-    <ScoreLineContainer>
+    <ScoreLineContainer {...otherProps}>
       <ScoreRate disabled defaultValue={0} count={_ScoreCount} />
       <RatingButton
         onClick={() => {
@@ -53,14 +56,17 @@ const ScoreLineContainer = styled(Box)`
   align-items: center;
   background: #14171a;
   color: #fff;
-  border-radius: 0.5rem;
-  padding: 32px 20px;
+  padding: 10px 20px;
+  border: 1px solid #39424c;
+  border-radius: 10px;
 `
 
 const RatingButton = styled(Box)`
   display: flex;
 
   color: #718096;
+
+  cursor: pointer;
 
   .rating-svg {
     margin-right: 5px;

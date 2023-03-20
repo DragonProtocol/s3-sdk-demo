@@ -6,10 +6,8 @@ const Page: React.VFC = () => {
   return (
     <App>
       <ScoreLine
-        text={"The Comment"}
-        name={"nickname"}
-        did="the did"
-        date="date"
+        onRating={() => {}}
+        mb={10}
       />
     </App>
   );

@@ -3,21 +3,23 @@ import { Box, Text } from 'rebass/styled-components'
 import UserAvatar from '../avatar/UserAvatar'
 import ScoreRate from './ScoreRate'
 
-export default function ReviewScoreCrad({
-  score,
-  comment,
-  did,
-  name,
-  date,
-  scoreCount,
-}: {
+export interface ReviewScoreCardProps {
   score: number
   comment: string
   did: string
   name: string
   date?: string
   scoreCount?: number
-}) {
+}
+
+export default function ReviewScoreCard({
+  score,
+  comment,
+  did,
+  name,
+  date,
+  scoreCount,
+}: ReviewScoreCardProps) {
   return (
     <ReviewScoreContainer>
       <ScoreRate disabled defaultValue={score} count={scoreCount || 5} />
@@ -39,7 +41,7 @@ export default function ReviewScoreCrad({
 const ReviewScoreContainer = styled(Box)`
   display: flex;
   flex-direction: column;
-  background: #1b1e23;
+  background: #14171a;
   color: #fff;
   gap: 0.7rem;
   border-radius: 0.5rem;

@@ -1,6 +1,6 @@
-import styled from "styled-components"
-import { Box, Text } from "rebass/styled-components"
-import { Rate, Progress } from "antd"
+import styled from 'styled-components'
+import { Box, BoxProps, Text } from 'rebass/styled-components'
+import { Rate, Progress } from 'antd'
 
 const _ScoreCount = 5
 
@@ -8,15 +8,16 @@ export default function ScoreDashboard({
   score,
   scoreCount = _ScoreCount,
   scoreTotal,
-  scoreRankPercents
+  scoreRankPercents,
+  ...otherProps
 }: {
-  score: number,
-  scoreCount: number,
-  scoreTotal?: string,
-  scoreRankPercents: []
-}) {
+  score: number
+  scoreCount: number
+  scoreTotal?: string
+  scoreRankPercents: Array<number>
+} & BoxProps) {
   return (
-    <ScoreDashboardContainer>
+    <ScoreDashboardContainer {...otherProps}>
       <ScoreBox>
         <ScoreText>
           <Score>{score || 0}</Score>
@@ -26,8 +27,9 @@ export default function ScoreDashboard({
         {scoreTotal && <ScoreTotal>{scoreTotal} global ratings</ScoreTotal>}
       </ScoreBox>
       <ScoreRank>
-        {Array.from({ length: scoreCount }, (_, i) => i + 1).reverse().map(
-          (counter,index) => (
+        {Array.from({ length: scoreCount }, (_, i) => i + 1)
+          .reverse()
+          .map((counter, index) => (
             <ScoreRankItem key={`score_${counter}`}>
               <span className="score-prefix">{counter} star</span>
               <Progress
@@ -37,8 +39,7 @@ export default function ScoreDashboard({
                 trailColor="#1B1E23"
               />
             </ScoreRankItem>
-          )
-        )}
+          ))}
       </ScoreRank>
     </ScoreDashboardContainer>
   )
@@ -56,7 +57,7 @@ const ScoreDashboardContainer = styled(Box)`
   position: relative;
 
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     top: 32px;
     left: 50%;
@@ -108,7 +109,7 @@ const ScoreRankItem = styled(Box)`
 `
 
 const Score = styled(Text)`
-  font-family: "Rubik";
+  font-family: 'Rubik';
   font-style: italic;
   font-weight: bolder;
   font-size: 40px;
