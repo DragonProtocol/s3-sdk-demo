@@ -24,7 +24,7 @@ export default function ScoreDashboard({
           <Score>{score || 0}</Score>
           <ScoreCount>/{scoreCount}</ScoreCount>
         </ScoreText>
-        <ScoreRate />
+        <ScoreRate value={score}/>
         {scoreTotal && <ScoreTotal>{scoreTotal} global ratings</ScoreTotal>}
       </ScoreBox>
       <ScoreRank>
