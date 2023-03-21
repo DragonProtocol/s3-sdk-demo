@@ -20,7 +20,7 @@ const BtnBox = styled(Box)`
   cursor: pointer;
 `;
 
-export default function VoteBtn({ threadId }: { threadId: string }) {
+export default function FavorBtn({ threadId }: { threadId: string }) {
   const { sessId, us3rAuthValid } = useUs3rProfileContext()!;
   const { openLoginModal } = useUs3rAuthModal();
   const { getPersonalFavorList, createNewFavor, getThreadInfo } =
