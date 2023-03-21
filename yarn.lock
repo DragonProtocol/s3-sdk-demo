@@ -2588,6 +2588,13 @@
     schema-utils "^3.0.0"
     source-map "^0.7.3"
 
+"@rebass/forms@^4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmmirror.com/@rebass/forms/-/forms-4.0.6.tgz#19a3af64f855baa65dec65aecadda5cd95a09dd7"
+  integrity sha512-20dHAlb5V0Na2HxCr73Jjoc4hD1ElimmlBpQtclXMoXUsjJ7ORdCNL1S9R54MX5f7iU2VrLGHU42eL7+nONNPQ==
+  dependencies:
+    reflexbox "^4.0.6"
+
 "@remix-run/router@1.4.0":
   version "1.4.0"
   resolved "https://registry.npmjs.org/@remix-run/router/-/router-1.4.0.tgz#74935d538e4df8893e47831a7aea362f295bcd39"
@@ -4652,6 +4659,15 @@
   dependencies:
     "@typescript-eslint/types" "5.55.0"
     eslint-visitor-keys "^3.3.0"
+
+"@us3r-network/authkit@^0.2":
+  version "0.2.13"
+  resolved "https://registry.npmjs.org/@us3r-network/authkit/-/authkit-0.2.13.tgz#5b406e52b7ef8dfedd12e1a3ec8adb03a9de7d83"
+  integrity sha512-ggRLwSX+kXn3MnPyils2dT34YE2teCAw85abuGIr6Eah5Y7S3hIAjWvX8/hoF7DoVW3S//XWyjLVMwqCcqIJKg==
+  dependencies:
+    "@multiavatar/multiavatar" "^1.0.7"
+    rebass "^4.0.7"
+    styled-components "^5.3.8"
 
 "@webassemblyjs/ast@1.11.1":
   version "1.11.1"
@@ -13416,6 +13432,11 @@ react-merge-refs@^1.0.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/react-merge-refs/-/react-merge-refs-1.1.0.tgz#73d88b892c6c68cbb7a66e0800faa374f4c38b06"
   integrity sha512-alTKsjEL0dKH/ru1Iyn7vliS2QRcBp9zZPGoWxUOvRGWPUYgjo+V01is7p04It6KhgrzhJGnIj9GgX8W4bZoCQ==
+
+react-rating-stars-component@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.npmmirror.com/react-rating-stars-component/-/react-rating-stars-component-2.2.0.tgz#e947c6a1f59278e6fea1098453f43cb15d077c14"
+  integrity sha512-A3lgLxumfFQQicKQmxacZ91fq/zRaVWlCPnVodJmJV6obvod4/yCotetN9WuyBiUfnKsEFDBo/8B85ocwmL7ng==
 
 react-refresh@^0.11.0:
   version "0.11.0"
