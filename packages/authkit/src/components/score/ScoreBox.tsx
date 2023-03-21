@@ -13,12 +13,8 @@ import {
 
 export default function ScoreBox({
   threadId,
-  reviewPage,
-  reviewPageSize,
 }: {
   threadId: string
-  reviewPage?: number
-  reviewPageSize?: number
 }) {
   const [isScoreModalShow, setIsScoreModalShow] = useState<boolean>(false)
   const [threadInfo, setThreadInfo] = useState<Thread>()
@@ -106,8 +102,6 @@ export default function ScoreBox({
                 did: score?.node?.creator?.id,
               })) || []
             }
-            reviewPage={reviewPage}
-            reviewPageSize={reviewPageSize}
           />
           <ScoreModal
             open={isScoreModalShow}
