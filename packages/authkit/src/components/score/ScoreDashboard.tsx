@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { Box, BoxProps, Text } from 'rebass/styled-components'
-import { Rate, Progress } from 'antd'
+
+import ScoreRate from './ScoreRate'
 
 const _ScoreCount = 5
 
@@ -23,7 +24,7 @@ export default function ScoreDashboard({
           <Score>{score || 0}</Score>
           <ScoreCount>/{scoreCount}</ScoreCount>
         </ScoreText>
-        <Rate disabled defaultValue={score} count={scoreCount} />
+        <ScoreRate />
         {scoreTotal && <ScoreTotal>{scoreTotal} global ratings</ScoreTotal>}
       </ScoreBox>
       <ScoreRank>
@@ -32,12 +33,8 @@ export default function ScoreDashboard({
           .map((counter, index) => (
             <ScoreRankItem key={`score_${counter}`}>
               <span className="score-prefix">{counter} star</span>
-              <Progress
-                percent={scoreRankPercents?.[index] || 0}
-                status="active"
-                strokeColor="#CF9523"
-                trailColor="#1B1E23"
-              />
+              <ScoreProgress percent={scoreRankPercents?.[index] || 0} />
+              <span className="score-suffix">{scoreRankPercents?.[index] || 0} %</span>
             </ScoreRankItem>
           ))}
       </ScoreRank>
@@ -90,6 +87,8 @@ const ScoreRank = styled(Box)`
   /* gap: 0.1rem; */
 
   flex-grow: 0.4;
+  row-gap: 10px;
+
 `
 const ScoreRankItem = styled(Box)`
   display: flex;
@@ -98,14 +97,36 @@ const ScoreRankItem = styled(Box)`
     white-space: nowrap;
     color: #718096;
     opacity: 0.8;
+    line-height: 10px;
+    min-width: 44px;
   }
-  .ant-progress-text {
+  .score-suffix{
     color: white;
-  }
-  .ant-progress-line {
-    margin-bottom: 2px;
+    margin-left: 10px;
+    white-space: nowrap;
+    font-size: 14px;
+    line-height: 10px;
+    width: 50px;
   }
   /* gap: 0.3rem; */
+`
+const ScoreProgress = styled(Box)<{ percent: number }>`
+  width: 100%;
+  height: 10px;
+  background: #1b1e23;
+  border-radius: 12px;
+  position: relative;
+  &::after {
+    content: '';
+    width: ${(props) => `${props.percent}%`};
+    height: 10px;
+    background: #cf9523;
+    border-radius: 12px;
+    transform: matrix(-1, 0, 0, 1, 0, 0);
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
 `
 
 const Score = styled(Text)`

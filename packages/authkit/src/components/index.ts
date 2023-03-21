@@ -17,8 +17,6 @@ export { default as CommentList } from "./comment/CommentList";
 export { default as VoteBtn } from "./vote/VoteBtn";
 export { default as FavorBtn } from "./favor/FavorBtn";
 
-export { default as ScoreDashboard } from "./score/ScoreDashboard";
-export { default as ScoreLine } from "./score/ScoreLine";
-export { default as ReviewScoreCard } from "./score/ReviewScoreCard";
-export { default as ReviewScoreCardList } from "./score/ReviewScoreCardList";
-export { default as ScoreModal } from "./score/ScoreModal";
+export { default as ScoreBox } from "./score/ScoreBox";
+
+

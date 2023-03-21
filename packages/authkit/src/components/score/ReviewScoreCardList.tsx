@@ -1,26 +1,26 @@
-import styled from 'styled-components'
 import { Box, Text } from 'rebass/styled-components'
-import UserAvatar from '../avatar/UserAvatar'
-import ScoreRate from './ScoreRate'
 import ReviewScoreCard, { ReviewScoreCardProps } from './ReviewScoreCard'
 
 export default function ReviewScoreCardList({
   scoreList,
+  reviewPage: page = 1,
+  reviewPageSize: pageSize = 5,
   ...otherProps
 }: {
   scoreList: Array<ReviewScoreCardProps & { key: string }>
+  reviewPage?: number
+  reviewPageSize?: number
 }) {
   return (
     <Box
       {...otherProps}
       sx={{
         display: 'grid',
-        gridGap: 3, // theme.space[3]
+        gridGap: 3,
         gridTemplateColumns: 'repeat(auto-fit, minmax(370px, 1fr))',
-        // gridTemplateColumns: 'repeat(auto-fit, minmax(128px, 1fr))',
       }}
     >
-      {scoreList?.map((item) => (
+      {scoreList?.slice((page - 1) * pageSize, page * pageSize)?.map((item) => (
         <ReviewScoreCard {...item} />
       ))}
     </Box>

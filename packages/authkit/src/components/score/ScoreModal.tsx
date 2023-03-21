@@ -1,14 +1,12 @@
 import { useState } from 'react'
 
 import { Flex, Button } from 'rebass/styled-components'
+import { Textarea } from '@rebass/forms'
 import styled from 'styled-components'
-import { Input } from 'antd'
 
 import Modal from '../modal/Modal'
 import UserAvatar from '../avatar/UserAvatar'
 import ScoreRate from './ScoreRate'
-
-const { TextArea } = Input
 
 export interface ScoreModal {
   open: boolean
@@ -38,12 +36,17 @@ function ScoreModal({ open, onClose, did, submitAction }: ScoreModal) {
           className="us3r-ScoreModal__options"
         >
           <ReviewScoreUserAvatar did={did} />
-          <ScoreRate value={score} count={5} onChange={setScore} />
-          <TextArea
-            maxLength={140}
+          <ScoreRate
+            value={score}
+            edit={true}
+            count={5}
+            onChange={(score: number) => {
+              setScore(score)
+            }}
+          />
+          <Comment
             value={comment}
-            style={{ width: '100%', height: 160, resize: 'none' }}
-            onChange={(e) => setComment(e?.target?.value)}
+            onChange={(e:any) => setComment(e?.target?.value)}
             placeholder="Comment"
           />
           <Flex
@@ -96,6 +99,21 @@ const ScoreModalWrapper = styled.div`
     }
   }
 `
+
+const Comment = styled(Textarea)`
+  outline: none;
+  background: transparent;
+  color: #718096 !important;
+  border-color: #39424c !important;
+  border-radius: 12px;
+  height: 100px;
+  resize: none;
+  ::placeholder {
+    color: #718096;
+    opacity: 1;
+  }
+`
+
 const CloseBtn = styled(Button)`
   flex-grow: 1;
   border: 1px solid #39424c;

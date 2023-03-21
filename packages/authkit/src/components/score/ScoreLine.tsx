@@ -7,8 +7,6 @@ import { useUs3rAuthModal } from '../provider/AuthModalContext'
 
 import ScoreRate from './ScoreRate'
 
-const _ScoreCount = 5
-
 export default function ScoreLine({
   onRating,
   ...otherProps
@@ -18,7 +16,7 @@ export default function ScoreLine({
 
   return (
     <ScoreLineContainer {...otherProps}>
-      <ScoreRate disabled defaultValue={0} count={_ScoreCount} />
+      <ScoreRate  value={0} />
       <RatingButton
         onClick={() => {
           if (!sessId) {

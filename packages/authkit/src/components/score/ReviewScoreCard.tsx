@@ -4,7 +4,7 @@ import UserAvatar from '../avatar/UserAvatar'
 import ScoreRate from './ScoreRate'
 
 export interface ReviewScoreCardProps {
-  score: number
+  value: number
   comment: string
   did: string
   name: string
@@ -13,7 +13,7 @@ export interface ReviewScoreCardProps {
 }
 
 export default function ReviewScoreCard({
-  score,
+  value,
   comment,
   did,
   name,
@@ -22,7 +22,7 @@ export default function ReviewScoreCard({
 }: ReviewScoreCardProps) {
   return (
     <ReviewScoreContainer>
-      <ScoreRate disabled defaultValue={score} count={scoreCount || 5} />
+      <ScoreRate value={value} count={scoreCount || 5} />
       <ReviewScoreComment>{comment}</ReviewScoreComment>
       <ReviewScoreBottom>
         <UserInfoBox>
