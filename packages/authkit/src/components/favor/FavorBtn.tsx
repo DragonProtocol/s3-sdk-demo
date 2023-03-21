@@ -4,7 +4,8 @@ import { Box } from "rebass/styled-components";
 import { useUs3rProfileContext } from "@us3r-network/profile";
 import { Page } from "@ceramicnetwork/common";
 import { useUs3rAuthModal } from "../provider/AuthModalContext";
-import { Favor, useUs3rThreadContext } from "@us3r-network/thread";
+import { Favor, Thread, useUs3rThreadContext } from "@us3r-network/thread";
+import Loading from "../loading";
 
 const BtnBox = styled(Box)`
   width: 194px;
@@ -19,56 +20,83 @@ const BtnBox = styled(Box)`
   cursor: pointer;
 `;
 
-export default function VoteBtn({
-  threadId,
-  favorAction,
-  favorCount,
-}: {
-  threadId: string;
-  favorCount: number;
-  favorAction: () => Promise<void>;
-}) {
-  const { sessId } = useUs3rProfileContext()!;
+export default function FavorBtn({ threadId }: { threadId: string }) {
+  const { sessId, us3rAuthValid } = useUs3rProfileContext()!;
   const { openLoginModal } = useUs3rAuthModal();
-  const { getPersonalFavorList } = useUs3rThreadContext()!;
+  const { getPersonalFavorList, createNewFavor, getThreadInfo } =
+    useUs3rThreadContext()!;
 
   const [personalFavors, setPersonalFavors] = useState<Page<Favor>>();
+  const [loading, setLoading] = useState(false);
+  const [threadInfo, setThreadInfo] = useState<Thread>();
+  const [mounted, setMounted] = useState(false);
+
+  const fetchThreadInfo = useCallback(
+    async (threadId: string) => {
+      try {
+        const data = await getThreadInfo(threadId);
+        setThreadInfo(data);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [getThreadInfo]
+  );
 
   const fetchPersonalFavors = useCallback(async () => {
+    if (!us3rAuthValid) return;
     try {
       const data = await getPersonalFavorList({ first: 1000 });
       setPersonalFavors(data);
     } catch (error) {
       console.error(error);
     }
+  }, [us3rAuthValid]);
+
+  const submitNewFavor = useCallback(async () => {
+    await createNewFavor({ threadId: threadId });
+    await fetchThreadInfo(threadId);
+  }, [createNewFavor, threadId, fetchThreadInfo]);
+
+  useEffect(() => {
+    setMounted(true);
   }, []);
 
   useEffect(() => {
+    if (!mounted) return;
     fetchPersonalFavors();
-  }, []);
+    threadId && fetchThreadInfo(threadId);
+  }, [fetchPersonalFavors, threadId, mounted]);
 
   const hasFavored = useMemo(() => {
     if (!personalFavors) return false;
     const include = personalFavors.edges.filter(({ node }) => {
-      node.thread?.id === threadId;
+      return node.thread?.id === threadId;
     });
-    return !!include;
+    return include.length > 0;
   }, [personalFavors, threadId]);
 
   return (
     <BtnBox
       onClick={async () => {
-        if (hasFavored) return;
+        if (hasFavored) {
+          console.log({ hasFavored });
+          return;
+        }
         if (!sessId) {
           openLoginModal();
           return;
         }
-        await favorAction();
+        setLoading(true);
+        await submitNewFavor();
+        setLoading(false);
         fetchPersonalFavors();
       }}
     >
-      <FavorIcon />
-      <span>{favorCount}</span>
+      {(loading && <Loading />) || (
+        <>{(hasFavored && <FavorWhiteIcon />) || <FavorIcon />}</>
+      )}
+      <span>{threadInfo?.favorsCount || 0}</span>
     </BtnBox>
   );
 }
@@ -76,20 +104,29 @@ export default function VoteBtn({
 function FavorIcon() {
   return (
     <svg
-      width="21"
-      height="20"
-      viewBox="0 0 21 20"
-      fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      height="24px"
+      viewBox="0 0 24 24"
+      width="24px"
+      fill="#FFFFFF"
     >
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M10.4944 4.27985C8.82825 2.332 6.04987 1.80804 3.96233 3.59168C1.87478 5.37532 1.58089 8.35748 3.22025 10.467C4.58326 12.2209 8.70823 15.9201 10.0602 17.1174C10.2114 17.2513 10.287 17.3183 10.3753 17.3446C10.4523 17.3676 10.5365 17.3676 10.6135 17.3446C10.7017 17.3183 10.7773 17.2513 10.9286 17.1174C12.2805 15.9201 16.4055 12.2209 17.7685 10.467C19.4079 8.35748 19.1498 5.35656 17.0264 3.59168C14.903 1.8268 12.1605 2.332 10.4944 4.27985Z"
-        stroke="#718096"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M0 0h24v24H0V0z" fill="none" />
+      <path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" />
+    </svg>
+  );
+}
+
+function FavorWhiteIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="24px"
+      viewBox="0 0 24 24"
+      width="24px"
+      fill="#FFFFFF"
+    >
+      <path d="M0 0h24v24H0V0z" fill="none" />
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
     </svg>
   );
 }

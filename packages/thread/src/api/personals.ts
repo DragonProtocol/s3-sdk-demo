@@ -69,6 +69,7 @@ export async function queryPersonalFavorList(
                   id
                   url
                   date
+                  type
                   creator {
                     id
                   }
@@ -113,6 +114,7 @@ export async function queryPersonalScoreList(
                   id
                   url
                   date
+                  type
                   creator {
                     id
                   }
@@ -156,6 +158,7 @@ export async function queryPersonalCommentList(
                   id
                   url
                   date
+                  type
                   creator {
                     id
                   }
@@ -199,6 +202,7 @@ export async function queryPersonalVoteList(
                   id
                   url
                   date
+                  type
                   creator {
                     id
                   }

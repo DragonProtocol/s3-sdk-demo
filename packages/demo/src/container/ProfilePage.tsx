@@ -20,7 +20,8 @@ enum Tab {
 }
 
 export default function Profile() {
-  const { sessId, profile, updateProfile } = useUs3rProfileContext()!;
+  const { sessId, profile, updateProfile, us3rAuthValid } =
+    useUs3rProfileContext()!;
   const {
     relationsComposeClient,
     getPersonalThreadList,
@@ -44,7 +45,10 @@ export default function Profile() {
 
   useEffect(() => {
     setName(profile?.name || "");
-    if (relationsComposeClient.context.isAuthenticated()) {
+  }, [profile]);
+
+  useEffect(() => {
+    if (relationsComposeClient.context.isAuthenticated() && us3rAuthValid) {
       getPersonalThreadList({})
         .then((data) => {
           setThreads(data.edges);
@@ -73,13 +77,13 @@ export default function Profile() {
         .catch(console.error);
     }
   }, [
-    profile,
+    us3rAuthValid,
     getPersonalThreadList,
     getPersonalFavorList,
-    relationsComposeClient.context,
     getPersonalCommentList,
     getPersonalScoreList,
     getPersonalVoteList,
+    relationsComposeClient.context,
   ]);
 
   return (
