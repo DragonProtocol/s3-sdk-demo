@@ -30,6 +30,7 @@ export interface Us3rAuthContextValue {
   getAuthorizer: (authToolType: AuthToolType) => Maybe<Authorizer>;
   loginWithAuthorizer: (authToolType: AuthToolType) => Promise<void>;
   logout: () => void;
+  authComposeClientsValid: boolean;
 }
 
 const authLast = getAuthLastFromStorage();
@@ -41,6 +42,7 @@ const defaultContextValue: Us3rAuthContextValue = {
   getAuthorizer: () => undefined,
   loginWithAuthorizer: () => Promise.resolve(),
   logout: () => {},
+  authComposeClientsValid: false,
 };
 
 const Us3rAuthContext = createContext(defaultContextValue);
