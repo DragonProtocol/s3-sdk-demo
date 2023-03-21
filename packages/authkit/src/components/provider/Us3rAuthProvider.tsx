@@ -71,12 +71,14 @@ export default function Us3rAuthProvider({
   const { threadComposeClient, relationsComposeClient } =
     useUs3rThreadContext()!;
 
+  const [authComposeClientsValid, setAuthComposeClientsValid] = useState(false);
   const authComposeClients = useCallback(() => {
     if (us3rAuthValid && us3rAuth.valid) {
       us3rAuth.authComposeClients([
         threadComposeClient,
         relationsComposeClient,
       ]);
+      setAuthComposeClientsValid(true);
     }
   }, [relationsComposeClient, threadComposeClient, us3rAuth, us3rAuthValid]);
 
@@ -143,6 +145,7 @@ export default function Us3rAuthProvider({
       getAuthorizer,
       loginWithAuthorizer,
       logout,
+      authComposeClientsValid,
     }),
     [
       authorizers,
@@ -151,6 +154,7 @@ export default function Us3rAuthProvider({
       getAuthorizer,
       loginWithAuthorizer,
       logout,
+      authComposeClientsValid,
     ]
   );
 
