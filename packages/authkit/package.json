@@ -24,7 +24,8 @@
     "rebass": "^4.0.7",
     "@rebass/forms": "^4.0.6",
     "styled-components": "^5.3.8",
-    "react-rating-stars-component": "^2.2.0"
+    "react-rating-stars-component": "^2.2.0",
+    "react-intersection-observer": "^9.3.4"
   },
   "peerDependencies": {
     "@us3r-network/profile": "0.1.6",

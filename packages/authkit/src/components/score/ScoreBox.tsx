@@ -13,12 +13,8 @@ import {
 
 export default function ScoreBox({
   threadId,
-  reviewPage,
-  reviewPageSize,
 }: {
   threadId: string
-  reviewPage?: number
-  reviewPageSize?: number
 }) {
   const [isScoreModalShow, setIsScoreModalShow] = useState<boolean>(false)
   const [threadInfo, setThreadInfo] = useState<Thread>()
@@ -98,16 +94,14 @@ export default function ScoreBox({
           <ScoreLine onRating={() => setIsScoreModalShow(true)} mb={10} />
           <ReviewScoreCardList
             scoreList={
-              threadInfo?.scores?.edges?.map((score) => ({
+              (threadInfo?.scores?.edges?.map((score) => ({
                 comment: score?.node?.text,
                 value: score?.node?.value,
                 key: score?.node?.id,
                 name: 'name',
                 did: score?.node?.creator?.id,
-              })) || []
+              })) || [])?.reverse()
             }
-            reviewPage={reviewPage}
-            reviewPageSize={reviewPageSize}
           />
           <ScoreModal
             open={isScoreModalShow}
