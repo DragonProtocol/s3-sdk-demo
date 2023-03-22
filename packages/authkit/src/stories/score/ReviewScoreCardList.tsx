@@ -5,7 +5,7 @@ import App from '../app/App'
 const Page: React.VFC = () => {
   return (
     <App>
-      <ReviewScoreCardList threadId="kjzl6kcym7w8y7dy1njfhc8ewv822i1qw1ty0o0vy5a4w5yu5cuqwqnbfcuh0qx" />
+      <ReviewScoreCardList threadId="kjzl6kcym7w8y6nj7humg79ab5tgvv2tvkjerwmbq0nppxm2iuncerr0dwee18r" />
     </App>
   )
 }

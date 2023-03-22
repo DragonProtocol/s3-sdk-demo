@@ -1,10 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Thread, useUs3rThreadContext } from '@us3r-network/thread'
+import { ReviewScoreCardProps } from './ReviewScoreCard'
 
 export const useGetThreadScoreInfo = (threadId?: string) => {
   const { getThreadInfo } = useUs3rThreadContext()!
   const [threadInfo, setThreadInfo] = useState<Thread>()
-  const [scoreInfo, setScoreInfo] = useState({})
+  const [scoreInfo, setScoreInfo] = useState<{
+    scoreAvg: number
+    scoreList: Array<ReviewScoreCardProps>
+  }>({
+    scoreAvg: 0,
+    scoreList: [],
+  })
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
@@ -32,13 +39,15 @@ export const useGetThreadScoreInfo = (threadId?: string) => {
 
       const scoreAvg = Math.min(Math.round(scoreSum / scoreTotal), 5)
 
-      const scoreList = threadInfo?.scores?.edges?.map((score) => ({
-        comment: score?.node?.text,
-        value: score?.node?.value,
-        key: score?.node?.id,
-        name: 'name',
-        did: score?.node?.creator?.id,
-      }))?.reverse()
+      const scoreList = threadInfo?.scores?.edges
+        ?.map((score) => ({
+          comment: score?.node?.text,
+          value: score?.node?.value,
+          key: score?.node?.id,
+          name: 'name',
+          did: score?.node?.creator?.id,
+        }))
+        ?.reverse()
 
       setScoreInfo({ scoreAvg, scoreList })
     }
