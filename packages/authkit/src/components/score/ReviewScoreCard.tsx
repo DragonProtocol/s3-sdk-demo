@@ -29,7 +29,7 @@ export default function ReviewScoreCard({
           <ReviewScoreUserAvatar did={did} />
           <UserInfo>
             <div className="name">{name}</div>
-            <div>1000</div>
+            {/* <div>1000</div> */}
           </UserInfo>
         </UserInfoBox>
         {date && <ScoreDate>{date}</ScoreDate>}

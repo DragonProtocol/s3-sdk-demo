@@ -3,7 +3,8 @@ import ExampleScoreBox from "./score/ScoreBox";
 // import ExampleScoreDashboard from "./score/ScoreDashboard";
 // import ExampleScoreLine from "./score/ScoreLine";
 // import ExampleReviewScoreCard from "./score/ReviewScoreCard";
-// import ExampleReviewScoreCardList from "./score/ReviewScoreCardList";
+import ExampleReviewScoreCardList from "./score/ReviewScoreCardList";
+import ExampleScore from "./score/Score";
 // import ExampleScoreModal from "./score/ScoreModal";
 
 
@@ -20,20 +21,20 @@ const Template1: ComponentStory<typeof ExampleScoreBox> = (args) => (
 );
 export const ScoreBox = Template1.bind({});
 
-// const Template2: ComponentStory<typeof ExampleScoreLine> = (args) => (
-//   <ExampleScoreLine {...args} />
-// );
-// export const ScoreLine = Template2.bind({});
+const Template2: ComponentStory<typeof ExampleScore> = (args) => (
+  <ExampleScore {...args} />
+);
+export const Score = Template2.bind({});
 
 // const Template3: ComponentStory<typeof ExampleReviewScoreCard> = (args) => (
 //   <ExampleReviewScoreCard {...args} />
 // );
 // export const ReviewScoreCrad = Template3.bind({});
 
-// const Template4: ComponentStory<typeof ExampleReviewScoreCardList> = (args) => (
-//   <ExampleReviewScoreCardList {...args} />
-// );
-// export const ReviewScoreCardList = Template4.bind({});
+const Template4: ComponentStory<typeof ExampleReviewScoreCardList> = (args) => (
+  <ExampleReviewScoreCardList {...args} />
+);
+export const ReviewScoreCardList = Template4.bind({});
 
 // const Template5: ComponentStory<typeof ExampleScoreModal> = (args) => (
 //   <ExampleScoreModal {...args} />

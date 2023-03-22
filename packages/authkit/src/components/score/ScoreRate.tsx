@@ -20,6 +20,7 @@ interface ReactStarsProps {
 }
 
 export default function ScoreRate(props: ReactStarsProps) {
+console.log(props,'props')
   return (
     <ScoreRateContainer>
       <ReactStars

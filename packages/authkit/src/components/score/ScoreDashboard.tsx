@@ -1,9 +1,32 @@
 import styled from 'styled-components'
 import { Box, BoxProps, Text } from 'rebass/styled-components'
 
+import { useGetThreadScoreInfo } from './hook'
 import ScoreRate from './ScoreRate'
 
 const _ScoreCount = 5
+
+export const Score = ({
+  score,
+  scoreCount,
+  threadId,
+}: {
+  score?: number
+  scoreCount?: number
+  threadId?: string
+}) => {
+  const { scoreAvg } = useGetThreadScoreInfo(threadId)
+
+  return (
+    <>
+      <ScoreText showScoreCount={Boolean(scoreCount)}>
+        <ScoreNum>{score || scoreAvg || 0}</ScoreNum>
+        {scoreCount && <ScoreCount>/{scoreCount}</ScoreCount>}
+      </ScoreText>
+      <ScoreRate value={score || scoreAvg || 0} count={5} />
+    </>
+  )
+}
 
 export default function ScoreDashboard({
   score,
@@ -20,11 +43,7 @@ export default function ScoreDashboard({
   return (
     <ScoreDashboardContainer {...otherProps}>
       <ScoreBox>
-        <ScoreText>
-          <Score>{score || 0}</Score>
-          <ScoreCount>/{scoreCount}</ScoreCount>
-        </ScoreText>
-        <ScoreRate value={score}/>
+        <Score score={score} scoreCount={scoreCount} />
         {scoreTotal && <ScoreTotal>{scoreTotal} global ratings</ScoreTotal>}
       </ScoreBox>
       <ScoreRank>
@@ -34,7 +53,9 @@ export default function ScoreDashboard({
             <ScoreRankItem key={`score_${counter}`}>
               <span className="score-prefix">{counter} star</span>
               <ScoreProgress percent={scoreRankPercents?.[index] || 0} />
-              <span className="score-suffix">{scoreRankPercents?.[index] || 0} %</span>
+              <span className="score-suffix">
+                {scoreRankPercents?.[index] || 0} %
+              </span>
             </ScoreRankItem>
           ))}
       </ScoreRank>
@@ -75,10 +96,12 @@ const ScoreBox = styled(Box)`
   }
 `
 
-const ScoreText = styled(Box)`
+const ScoreText = styled(Box)<{ showScoreCount: boolean }>`
   display: flex;
   align-items: baseline;
   margin-bottom: -10px;
+
+  justify-content: ${(props) => (props?.showScoreCount ? 'left' : 'center')};
 `
 
 const ScoreRank = styled(Box)`
@@ -88,7 +111,6 @@ const ScoreRank = styled(Box)`
 
   flex-grow: 0.4;
   row-gap: 10px;
-
 `
 const ScoreRankItem = styled(Box)`
   display: flex;
@@ -100,7 +122,7 @@ const ScoreRankItem = styled(Box)`
     line-height: 10px;
     min-width: 44px;
   }
-  .score-suffix{
+  .score-suffix {
     color: white;
     margin-left: 10px;
     white-space: nowrap;
@@ -129,7 +151,7 @@ const ScoreProgress = styled(Box)<{ percent: number }>`
   }
 `
 
-const Score = styled(Text)`
+const ScoreNum = styled(Text)`
   font-family: 'Rubik';
   font-style: italic;
   font-weight: bolder;
