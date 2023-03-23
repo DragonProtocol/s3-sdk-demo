@@ -1,21 +1,17 @@
-import { useCallback, useEffect, useState } from 'react'
-import { Thread, useUs3rThreadContext } from '@us3r-network/thread'
-import { useUs3rProfileContext } from '@us3r-network/profile'
-import { Box } from 'rebass/styled-components'
-import styled from 'styled-components'
+import { useCallback, useEffect, useState } from "react"
+import { Thread, useUs3rThreadContext } from "@us3r-network/thread"
+import { useUs3rProfileContext } from "@us3r-network/profile"
+import { Box } from "rebass/styled-components"
+import styled from "styled-components"
 
 import {
   ScoreLine,
   ScoreDashboard,
   ReviewScoreCardList,
   ScoreModal,
-} from './index'
+} from "./index"
 
-export default function ScoreBox({
-  threadId,
-}: {
-  threadId: string
-}) {
+export default function ScoreBox({ threadId }: { threadId: string }) {
   const [isScoreModalShow, setIsScoreModalShow] = useState<boolean>(false)
   const [threadInfo, setThreadInfo] = useState<Thread>()
   const [scoreInfo, setScoreInfo] = useState<any>({})
@@ -33,15 +29,22 @@ export default function ScoreBox({
     [createNewScore, threadId, getThreadInfo]
   )
 
+  const handleGetThreadInfo = useCallback(
+    async (threadId: string) => {
+      if (!threadId) return
+      setLoading(true)
+      getThreadInfo(threadId)
+        .then((data) => {
+          setThreadInfo(data)
+        })
+        .catch(console.error)
+        .finally(() => setLoading(false))
+    },
+    [getThreadInfo, threadId]
+  )
+
   useEffect(() => {
-    if (!threadId) return
-    setLoading(true)
-    getThreadInfo(threadId)
-      .then((data) => {
-        setThreadInfo(data)
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false))
+    handleGetThreadInfo(threadId)
   }, [getThreadInfo, threadId])
 
   useEffect(() => {
@@ -93,26 +96,23 @@ export default function ScoreBox({
           />
           <ScoreLine onRating={() => setIsScoreModalShow(true)} mb={10} />
           <ReviewScoreCardList
-            scoreList={
-              (threadInfo?.scores?.edges?.map((score) => ({
+            scoreList={(
+              threadInfo?.scores?.edges?.map((score) => ({
                 comment: score?.node?.text,
                 value: score?.node?.value,
                 key: score?.node?.id,
-                name: 'name',
+                name: "name",
                 did: score?.node?.creator?.id,
-              })) || [])?.reverse()
-            }
+              })) || []
+            )?.reverse()}
           />
           <ScoreModal
             open={isScoreModalShow}
             onClose={() => setIsScoreModalShow(false)}
-            submitAction={({ comment, score }) => {
-              if (!comment || !score) {
-                // toast.error('Please check that comments and ratings are not empty')
-                return
-              }
-
-              submitNewScore({ text: comment, value: score })
+            submitAction={async ({ comment, score }) => {
+              await submitNewScore({ text: comment, value: score })
+              setIsScoreModalShow(false)
+              handleGetThreadInfo(threadId)
             }}
             did={sessId}
           />
