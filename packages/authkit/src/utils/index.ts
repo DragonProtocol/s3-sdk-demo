@@ -1,3 +1,4 @@
+export { default as shortPubKey } from "./shortPubKey";
 export const getUserDisplayName = (
   sessId: string,
   profile?:

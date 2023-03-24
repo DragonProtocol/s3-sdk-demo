@@ -1,6 +1,6 @@
 {
   "name": "@us3r-network/authkit",
-  "version": "0.1.0",
+  "version": "0.4.0",
   "description": "",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -29,7 +29,7 @@
   },
   "peerDependencies": {
     "@us3r-network/profile": "0.1.6",
-    "@us3r-network/thread": "^0.1.0",
+    "@us3r-network/thread": "^0.1.2",
     "react": "^18.2.0"
   },
   "devDependencies": {
@@ -51,7 +51,7 @@
     "@types/react": "^18.0.28",
     "@types/rebass": "^4.0.10",
     "@us3r-network/profile": "0.1.6",
-    "@us3r-network/thread": "^0.1.0",
+    "@us3r-network/thread": "^0.1.2",
     "babel-loader": "^8.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

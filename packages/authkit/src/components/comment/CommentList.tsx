@@ -1,9 +1,4 @@
-import {
-  Thread,
-  useUs3rThreadContext,
-  Vote,
-  VoteType,
-} from "@us3r-network/thread";
+import { Thread, useUs3rThreadContext, VoteType } from "@us3r-network/thread";
 import { useCallback, useEffect, useState } from "react";
 import { Box } from "rebass/styled-components";
 
@@ -56,60 +51,59 @@ const CountItem = styled(Box)`
 
 export default function CommentList({ threadId }: { threadId: string }) {
   const [threadInfo, setThreadInfo] = useState<Thread>();
-
-  const { getThreadInfo, createNewComment, createNewFavor, createNewVote } =
+  const { getThreadInfo, createNewComment, createNewFavor } =
     useUs3rThreadContext()!;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const fetchThreadInfo = useCallback(
+    async (threadId: string) => {
+      try {
+        const data = await getThreadInfo(threadId);
+        setThreadInfo(data);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [getThreadInfo]
+  );
 
   useEffect(() => {
     if (!threadId) return;
-
-    getThreadInfo(threadId)
-      .then((data) => {
-        setThreadInfo(data);
-      })
-      .catch(console.error);
-  }, [getThreadInfo, threadId]);
+    if (!mounted) return;
+    fetchThreadInfo(threadId);
+  }, [getThreadInfo, threadId, mounted]);
 
   const submitNewComment = useCallback(
     async (commentText: string) => {
       await createNewComment({ text: commentText, threadId: threadId });
-      await getThreadInfo(threadId);
+      await fetchThreadInfo(threadId);
     },
-    [createNewComment, threadId, getThreadInfo]
+    [createNewComment, threadId, fetchThreadInfo]
   );
 
   const submitNewFavor = useCallback(async () => {
     await createNewFavor({ threadId: threadId });
-    await getThreadInfo(threadId);
-  }, [createNewFavor, threadId, getThreadInfo]);
-
-  const submitNewVote = useCallback(async () => {
-    await createNewVote({ threadId: threadId, type: VoteType.UP_VOTE });
-    await getThreadInfo(threadId);
-  }, [createNewVote, threadId, getThreadInfo]);
+    await fetchThreadInfo(threadId);
+  }, [createNewFavor, threadId, fetchThreadInfo]);
 
   return (
     <CommentListContainer>
       <CountBox>
-        <VoteBtn
-          voteCount={threadInfo?.votesCount || 0}
-          threadId={threadId}
-          voteAction={submitNewVote}
-        />
+        <VoteBtn threadId={threadId} />
         <CountItem>
           <CommentIcon />
           <span> {threadInfo?.commentsCount}</span>
         </CountItem>
-        <FavorBtn
-          favorCount={threadInfo?.favorsCount || 0}
-          threadId={threadId}
-          favorAction={submitNewFavor}
-        />
+        <FavorBtn threadId={threadId} />
       </CountBox>
 
       <CommentSubmit
-        submitAction={(text) => {
-          submitNewComment(text);
+        submitAction={async (text) => {
+          await submitNewComment(text);
         }}
       />
       <ListBox>
@@ -126,42 +120,17 @@ export default function CommentList({ threadId }: { threadId: string }) {
   );
 }
 
-function FavorIcon() {
-  return (
-    <svg
-      width="21"
-      height="20"
-      viewBox="0 0 21 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
-        d="M10.4944 4.27985C8.82825 2.332 6.04987 1.80804 3.96233 3.59168C1.87478 5.37532 1.58089 8.35748 3.22025 10.467C4.58326 12.2209 8.70823 15.9201 10.0602 17.1174C10.2114 17.2513 10.287 17.3183 10.3753 17.3446C10.4523 17.3676 10.5365 17.3676 10.6135 17.3446C10.7017 17.3183 10.7773 17.2513 10.9286 17.1174C12.2805 15.9201 16.4055 12.2209 17.7685 10.467C19.4079 8.35748 19.1498 5.35656 17.0264 3.59168C14.903 1.8268 12.1605 2.332 10.4944 4.27985Z"
-        stroke="#718096"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 function CommentIcon() {
   return (
     <svg
-      width="21"
-      height="20"
-      viewBox="0 0 21 20"
-      fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      height="24px"
+      viewBox="0 0 24 24"
+      width="24px"
+      fill="#FFFFFF"
     >
-      <path
-        d="M6.75 8.75H6.75833M10.5 8.75H10.5083M14.25 8.75H14.2583M8.75 16L9.96667 17.6222C10.1476 17.8635 10.2381 17.9841 10.349 18.0272C10.4461 18.065 10.5539 18.065 10.651 18.0272C10.7619 17.9841 10.8524 17.8635 11.0333 17.6222L12.25 16C12.4943 15.6743 12.6164 15.5114 12.7654 15.3871C12.9641 15.2213 13.1986 15.104 13.4504 15.0446C13.6393 15 13.8429 15 14.25 15C15.4149 15 15.9973 15 16.4567 14.8097C17.0693 14.556 17.556 14.0693 17.8097 13.4567C18 12.9973 18 12.4149 18 11.25V6.5C18 5.09987 18 4.3998 17.7275 3.86502C17.4878 3.39462 17.1054 3.01217 16.635 2.77248C16.1002 2.5 15.4001 2.5 14 2.5H7C5.59987 2.5 4.8998 2.5 4.36502 2.77248C3.89462 3.01217 3.51217 3.39462 3.27248 3.86502C3 4.3998 3 5.09987 3 6.5V11.25C3 12.4149 3 12.9973 3.1903 13.4567C3.44404 14.0693 3.93072 14.556 4.54329 14.8097C5.00272 15 5.58515 15 6.75 15C7.15715 15 7.36072 15 7.54959 15.0446C7.80141 15.104 8.03593 15.2213 8.23458 15.3871C8.38357 15.5114 8.50571 15.6743 8.75 16ZM7.16667 8.75C7.16667 8.98012 6.98012 9.16667 6.75 9.16667C6.51988 9.16667 6.33333 8.98012 6.33333 8.75C6.33333 8.51988 6.51988 8.33333 6.75 8.33333C6.98012 8.33333 7.16667 8.51988 7.16667 8.75ZM10.9167 8.75C10.9167 8.98012 10.7301 9.16667 10.5 9.16667C10.2699 9.16667 10.0833 8.98012 10.0833 8.75C10.0833 8.51988 10.2699 8.33333 10.5 8.33333C10.7301 8.33333 10.9167 8.51988 10.9167 8.75ZM14.6667 8.75C14.6667 8.98012 14.4801 9.16667 14.25 9.16667C14.0199 9.16667 13.8333 8.98012 13.8333 8.75C13.8333 8.51988 14.0199 8.33333 14.25 8.33333C14.4801 8.33333 14.6667 8.51988 14.6667 8.75Z"
-        stroke="#718096"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M0 0h24v24H0V0z" fill="none" />
+      <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM20 4v13.17L18.83 16H4V4h16zM6 12h12v2H6zm0-3h12v2H6zm0-3h12v2H6z" />
     </svg>
   );
 }

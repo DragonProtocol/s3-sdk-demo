@@ -39,7 +39,10 @@ export default [
       resolve(),
       commonjs(),
       image(),
-      typescript({ tsconfig: "./tsconfig.json", exclude: ["**/stories/*"] }),
+      typescript({
+        tsconfig: "./tsconfig.json",
+        exclude: ["src/stories/**/*"],
+      }),
       postcss(),
       terser(),
     ],

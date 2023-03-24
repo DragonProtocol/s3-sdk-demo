@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Box, Text } from "rebass/styled-components";
 import UserAvatar from "../avatar/UserAvatar";
+import Username from "../username";
 
 const CommentContainer = styled(Box)`
   display: flex;
@@ -22,12 +23,6 @@ const CommentContent = styled(Box)`
 const CommentContentHeader = styled(Box)`
   display: flex;
   justify-content: space-between;
-`;
-
-const NicknameText = styled(Text)`
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 17px;
 `;
 
 const ContentText = styled(Text)`
@@ -64,7 +59,7 @@ export default function CommentCard({
       <CommentUserAvatar did={did} />
       <CommentContent>
         <CommentContentHeader>
-          <NicknameText>{name || did || "did:pkh:0"}</NicknameText>
+          <Username did={did} name={name} />
           {date && <DateText>{date}</DateText>}
         </CommentContentHeader>
         <ContentText>{text}</ContentText>

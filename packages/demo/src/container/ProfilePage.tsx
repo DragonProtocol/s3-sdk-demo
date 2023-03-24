@@ -20,7 +20,8 @@ enum Tab {
 }
 
 export default function Profile() {
-  const { sessId, profile, updateProfile } = useUs3rProfileContext()!;
+  const { sessId, profile, updateProfile, us3rAuthValid } =
+    useUs3rProfileContext()!;
   const {
     relationsComposeClient,
     getPersonalThreadList,
@@ -44,7 +45,10 @@ export default function Profile() {
 
   useEffect(() => {
     setName(profile?.name || "");
-    if (relationsComposeClient.context.isAuthenticated()) {
+  }, [profile]);
+
+  useEffect(() => {
+    if (relationsComposeClient.context.isAuthenticated() && us3rAuthValid) {
       getPersonalThreadList({})
         .then((data) => {
           setThreads(data.edges);
@@ -53,7 +57,7 @@ export default function Profile() {
 
       getPersonalFavorList({})
         .then((data) => {
-          setFavors(data.edges);
+          if (data) setFavors(data.edges);
         })
         .catch(console.error);
       getPersonalCommentList({})
@@ -63,23 +67,23 @@ export default function Profile() {
         .catch(console.error);
       getPersonalScoreList({})
         .then((data) => {
-          setScores(data.edges);
+          if (data) setScores(data.edges);
         })
         .catch(console.error);
       getPersonalVoteList({})
         .then((data) => {
-          setVotes(data.edges);
+          if (data) setVotes(data.edges);
         })
         .catch(console.error);
     }
   }, [
-    profile,
+    us3rAuthValid,
     getPersonalThreadList,
     getPersonalFavorList,
-    relationsComposeClient.context,
     getPersonalCommentList,
     getPersonalScoreList,
     getPersonalVoteList,
+    relationsComposeClient.context,
   ]);
 
   return (

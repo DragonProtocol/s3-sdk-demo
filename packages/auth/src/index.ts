@@ -6,8 +6,8 @@ import type { ComposeClient } from "@composedb/client";
 
 export type AuthChain = "metamask" | "phantom";
 
-const SessionKey = "did";
-const SessionAuthWithKey = "session-auth-with";
+export const SessionKey = "did";
+export const SessionAuthWithKey = "session-auth-with";
 
 export class Us3rAuth {
   session: DIDSession | undefined;
@@ -73,6 +73,7 @@ export class Us3rAuth {
       ethProvider,
       accountId
     );
+    accountId.chainId.reference = "1";
     this.session = await DIDSession.authorize(authMethod, {
       resources: ["ceramic://*"],
     });

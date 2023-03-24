@@ -30,6 +30,7 @@ export interface Us3rAuthContextValue {
   getAuthorizer: (authToolType: AuthToolType) => Maybe<Authorizer>;
   loginWithAuthorizer: (authToolType: AuthToolType) => Promise<void>;
   logout: () => void;
+  authComposeClientsValid: boolean;
 }
 
 const authLast = getAuthLastFromStorage();
@@ -41,6 +42,7 @@ const defaultContextValue: Us3rAuthContextValue = {
   getAuthorizer: () => undefined,
   loginWithAuthorizer: () => Promise.resolve(),
   logout: () => {},
+  authComposeClientsValid: false,
 };
 
 const Us3rAuthContext = createContext(defaultContextValue);
@@ -71,12 +73,14 @@ export default function Us3rAuthProvider({
   const { threadComposeClient, relationsComposeClient } =
     useUs3rThreadContext()!;
 
+  const [authComposeClientsValid, setAuthComposeClientsValid] = useState(false);
   const authComposeClients = useCallback(() => {
     if (us3rAuthValid && us3rAuth.valid) {
       us3rAuth.authComposeClients([
         threadComposeClient,
         relationsComposeClient,
       ]);
+      setAuthComposeClientsValid(true);
     }
   }, [relationsComposeClient, threadComposeClient, us3rAuth, us3rAuthValid]);
 
@@ -125,9 +129,10 @@ export default function Us3rAuthProvider({
         default:
           throw Error("Unsupported authToolType");
       }
+      authComposeClients();
       updateLastAuthorizer(authToolType);
     },
-    [connectUs3r, updateLastAuthorizer]
+    [connectUs3r, updateLastAuthorizer, authComposeClients]
   );
 
   const logout = useCallback(async () => {
@@ -142,6 +147,7 @@ export default function Us3rAuthProvider({
       getAuthorizer,
       loginWithAuthorizer,
       logout,
+      authComposeClientsValid,
     }),
     [
       authorizers,
@@ -150,6 +156,7 @@ export default function Us3rAuthProvider({
       getAuthorizer,
       loginWithAuthorizer,
       logout,
+      authComposeClientsValid,
     ]
   );
 
