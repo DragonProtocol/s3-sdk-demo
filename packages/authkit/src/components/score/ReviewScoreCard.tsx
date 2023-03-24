@@ -28,7 +28,7 @@ export default function ReviewScoreCard({
         <UserInfoBox>
           <ReviewScoreUserAvatar did={did} />
           <UserInfo>
-            <div className="name">{name}</div>
+            {/* <div className="name">{name}</div> */}
             {/* <div>1000</div> */}
           </UserInfo>
         </UserInfoBox>

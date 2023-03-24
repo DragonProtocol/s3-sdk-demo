@@ -17,10 +17,10 @@ export default function ScoreLine({
   return (
     <ScoreLineContainer
       onClick={() => {
-        // if (!sessId) {
-        //   openLoginModal()
-        //   return
-        // }
+        if (!sessId) {
+          openLoginModal()
+          return
+        }
 
         onRating?.()
       }}
