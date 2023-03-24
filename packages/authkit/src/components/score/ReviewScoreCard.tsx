@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { Box, Text } from 'rebass/styled-components'
 import UserAvatar from '../avatar/UserAvatar'
 import ScoreRate from './ScoreRate'
+import UserName from '../username'
 
 export interface ReviewScoreCardProps {
   value: number
@@ -28,7 +29,7 @@ export default function ReviewScoreCard({
         <UserInfoBox>
           <ReviewScoreUserAvatar did={did} />
           <UserInfo>
-            {/* <div className="name">{name}</div> */}
+            <UserName did={did} />
             {/* <div>1000</div> */}
           </UserInfo>
         </UserInfoBox>
