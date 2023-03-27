@@ -59,6 +59,39 @@ export async function mutationNewComment(
   return (res.data as any).createComment;
 }
 
+export async function mutationUpdateComment(
+  relationComposeClient: ComposeClient,
+  {
+    text,
+    threadId,
+    commentId,
+  }: { text: string; threadId: string; commentId: string }
+): Promise<CreateResult> {
+  const createMutation = `
+      mutation UpdateComment($input: UpdateCommentInput!) {
+        updateComment(input: $input) {
+          document {
+            id
+          }
+        }
+      }
+    `;
+  const res = await relationComposeClient.executeQuery(createMutation, {
+    input: {
+      id: commentId,
+      content: {
+        threadID: threadId,
+        text: text,
+      },
+    },
+  });
+  if (res.errors) {
+    throw res.errors;
+  }
+
+  return (res.data as any).createComment;
+}
+
 export async function mutationNewFavor(
   relationComposeClient: ComposeClient,
   { threadId }: { threadId: string }
@@ -101,6 +134,41 @@ export async function mutationNewScore(
     `;
   const res = await relationComposeClient.executeQuery(createMutation, {
     input: {
+      content: {
+        threadID: threadId,
+        text: text,
+        value,
+      },
+    },
+  });
+  if (res.errors) {
+    throw res.errors;
+  }
+
+  return (res.data as any).createScore;
+}
+
+export async function mutationUpdateScore(
+  relationComposeClient: ComposeClient,
+  {
+    text,
+    value,
+    threadId,
+    scoreId,
+  }: { text: string; value: number; threadId: string; scoreId: string }
+): Promise<CreateResult> {
+  const createMutation = `
+  mutation UpdateScore($input: UpdateScoreInput!) {
+    updateScore(input: $input) {
+      document {
+        id
+      }
+    }
+  }
+`;
+  const res = await relationComposeClient.executeQuery(createMutation, {
+    input: {
+      id: scoreId,
       content: {
         threadID: threadId,
         text: text,

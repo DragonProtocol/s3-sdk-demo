@@ -20,6 +20,8 @@ import {
   mutationNewFavor,
   mutationNewScore,
   mutationNewVote,
+  mutationUpdateComment,
+  mutationUpdateScore,
 } from "./api/mutations";
 import { queryThreadListDesc } from "./api/queries";
 import {
@@ -31,57 +33,87 @@ import {
 
 export { Thread, Comment, Score, Vote, Favor, VoteType } from "./api/types";
 
-const ThreadCeramicContext = createContext<{
-  threadComposeClient: ComposeClient;
-  relationsComposeClient: ComposeClient;
-  getThreadList: ({ first = 10, after = "" }) => Promise<Page<Thread>>;
-  getThreadListDesc: ({ last = 10, before = "" }) => Promise<Page<Thread>>;
-  getThreadInfo: (streamId: string) => Promise<Thread>;
-  getPersonalThreadList: ({ first = 10, after = "" }) => Promise<Page<Thread>>;
-  getPersonalCommentList: ({
-    first = 10,
-    after = "",
-  }) => Promise<Page<Comment>>;
-  getPersonalFavorList: ({ first = 10, after = "" }) => Promise<Page<Favor>>;
-  getPersonalScoreList: ({ first = 10, after = "" }) => Promise<Page<Score>>;
-  getPersonalVoteList: ({ first = 10, after = "" }) => Promise<Page<Vote>>;
+const ThreadCeramicContext =
+  createContext<{
+    threadComposeClient: ComposeClient;
+    relationsComposeClient: ComposeClient;
+    getThreadList: ({ first = 10, after = "" }) => Promise<Page<Thread>>;
+    getThreadListDesc: ({ last = 10, before = "" }) => Promise<Page<Thread>>;
+    getThreadInfo: (streamId: string) => Promise<Thread>;
+    getPersonalThreadList: ({
+      first = 10,
+      after = "",
+    }) => Promise<Page<Thread>>;
+    getPersonalCommentList: ({
+      first = 10,
+      after = "",
+    }) => Promise<Page<Comment>>;
+    getPersonalFavorList: ({ first = 10, after = "" }) => Promise<Page<Favor>>;
+    getPersonalScoreList: ({ first = 10, after = "" }) => Promise<Page<Score>>;
+    getPersonalVoteList: ({ first = 10, after = "" }) => Promise<Page<Vote>>;
 
-  createNewThread: ({
-    url,
-    type = "",
-  }: {
-    url: string;
-    type?: string;
-  }) => Promise<CreateResult>;
+    createNewThread: ({
+      url,
+      type = "",
+    }: {
+      url: string;
+      type?: string;
+    }) => Promise<CreateResult>;
 
-  createNewComment: ({
-    text,
-    threadId,
-  }: {
-    text: string;
-    threadId: string;
-  }) => Promise<CreateResult>;
+    createNewComment: ({
+      text,
+      threadId,
+    }: {
+      text: string;
+      threadId: string;
+    }) => Promise<CreateResult>;
 
-  createNewVote: ({
-    type,
-    threadId,
-  }: {
-    type: VoteType;
-    threadId: string;
-  }) => Promise<CreateResult>;
+    updateComment: ({
+      text,
+      threadId,
+      commentId,
+    }: {
+      commentId: string;
+      text: string;
+      threadId: string;
+    }) => Promise<CreateResult>;
 
-  createNewScore: ({
-    value,
-    text,
-    threadId,
-  }: {
-    value: number;
-    text: string;
-    threadId: string;
-  }) => Promise<CreateResult>;
+    createNewVote: ({
+      type,
+      threadId,
+    }: {
+      type: VoteType;
+      threadId: string;
+    }) => Promise<CreateResult>;
 
-  createNewFavor: ({ threadId }: { threadId: string }) => Promise<CreateResult>;
-} | null>(null);
+    createNewScore: ({
+      value,
+      text,
+      threadId,
+    }: {
+      value: number;
+      text: string;
+      threadId: string;
+    }) => Promise<CreateResult>;
+
+    updateScore: ({
+      value,
+      text,
+      threadId,
+      scoreId,
+    }: {
+      scoreId: string;
+      value: number;
+      text: string;
+      threadId: string;
+    }) => Promise<CreateResult>;
+
+    createNewFavor: ({
+      threadId,
+    }: {
+      threadId: string;
+    }) => Promise<CreateResult>;
+  } | null>(null);
 
 export const Us3rThreadProvider = ({
   ceramicHost,
@@ -202,6 +234,25 @@ export const Us3rThreadProvider = ({
     [relationsComposeClient]
   );
 
+  const updateComment = useCallback(
+    async ({
+      text,
+      threadId,
+      commentId,
+    }: {
+      text: string;
+      threadId: string;
+      commentId: string;
+    }) => {
+      return await mutationUpdateComment(relationsComposeClient, {
+        text,
+        threadId,
+        commentId,
+      });
+    },
+    [relationsComposeClient]
+  );
+
   const createNewFavor = useCallback(
     async ({ threadId }: { threadId: string }) => {
       return await mutationNewFavor(relationsComposeClient, { threadId });
@@ -235,6 +286,28 @@ export const Us3rThreadProvider = ({
     [relationsComposeClient]
   );
 
+  const updateScore = useCallback(
+    async ({
+      scoreId,
+      threadId,
+      text,
+      value,
+    }: {
+      scoreId: string;
+      threadId: string;
+      text: string;
+      value: number;
+    }) => {
+      return await mutationUpdateScore(relationsComposeClient, {
+        threadId,
+        text,
+        value,
+        scoreId,
+      });
+    },
+    [relationsComposeClient]
+  );
+
   return (
     <ThreadCeramicContext.Provider
       value={{
@@ -250,9 +323,11 @@ export const Us3rThreadProvider = ({
         getPersonalVoteList,
         createNewThread,
         createNewComment,
+        updateComment,
         createNewFavor,
         createNewVote,
         createNewScore,
+        updateScore,
       }}
     >
       {children}

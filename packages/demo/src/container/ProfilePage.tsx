@@ -29,6 +29,8 @@ export default function Profile() {
     getPersonalCommentList,
     getPersonalScoreList,
     getPersonalVoteList,
+    updateComment,
+    updateScore,
   } = useUs3rThreadContext()!;
 
   const [name, setName] = useState("");
@@ -152,6 +154,19 @@ export default function Profile() {
               <div key={item.node.id}>
                 {item.node.text}
                 <div>{item.node.thread?.url}</div>
+
+                <button
+                  onClick={() => {
+                    if (!item.node.thread?.id) return;
+                    updateComment({
+                      commentId: item.node.id,
+                      threadId: item.node.thread?.id,
+                      text: "hahah",
+                    });
+                  }}
+                >
+                  update
+                </button>
               </div>
             );
           })}
@@ -173,6 +188,20 @@ export default function Profile() {
               <div key={item.node.id}>
                 {item.node.text}
                 <p>{item.node.thread?.url}</p>
+                <button
+                  onClick={() => {
+                    if (!item.node.thread?.id) return;
+                    updateScore({
+                      scoreId: item.node.id,
+                      value: item.node.value,
+                      text: item.node.text + " - haha",
+                      threadId: item.node.thread.id,
+                    });
+                  }}
+                >
+                  update
+                </button>
+                <br />
               </div>
             );
           })}
