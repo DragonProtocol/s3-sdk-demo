@@ -1,21 +1,31 @@
-import { useCallback, useEffect, useState } from "react"
-import { Thread, useUs3rThreadContext } from "@us3r-network/thread"
-import { useUs3rProfileContext } from "@us3r-network/profile"
-import { Box } from "rebass/styled-components"
-import styled from "styled-components"
+import { useCallback, useEffect, useState } from 'react'
+import { Thread, useUs3rThreadContext } from '@us3r-network/thread'
+import { useUs3rProfileContext } from '@us3r-network/profile'
+import { Box } from 'rebass/styled-components'
+import styled from 'styled-components'
 
 import {
   ScoreLine,
   ScoreDashboard,
   ReviewScoreCardList,
   ScoreModal,
-} from "./index"
+} from './index'
+
+const defaultScoreModalProps = {
+  open: false,
+  defaultComment: '',
+  defaultScore: 0,
+}
 
 export default function ScoreBox({ threadId }: { threadId: string }) {
   const [isScoreModalShow, setIsScoreModalShow] = useState<boolean>(false)
   const [threadInfo, setThreadInfo] = useState<Thread>()
   const [scoreInfo, setScoreInfo] = useState<any>({})
   const [loading, setLoading] = useState<boolean>(false)
+
+  const [scoreModalProps, setScoreModalProps] = useState<any>(
+    defaultScoreModalProps
+  )
 
   const { getThreadInfo, createNewScore } = useUs3rThreadContext()!
   const { sessId } = useUs3rProfileContext()!
@@ -94,24 +104,47 @@ export default function ScoreBox({ threadId }: { threadId: string }) {
             mt={10}
             mb={10}
           />
-          <ScoreLine onRating={() => setIsScoreModalShow(true)} mb={10} />
+          <ScoreLine
+            onRating={() => {
+              setScoreModalProps({ ...defaultScoreModalProps, open: true })
+            }}
+            mb={10}
+            disabled={
+              sessId in
+              (threadInfo?.scores?.edges?.reduce(
+                (acc, cur) => ((acc[cur?.node?.creator?.id] = 1), acc),
+                {}
+              ) || {})
+            }
+          />
           <ReviewScoreCardList
             scoreList={(
               threadInfo?.scores?.edges?.map((score) => ({
                 comment: score?.node?.text,
                 value: score?.node?.value,
                 key: score?.node?.id,
-                name: "name",
+                name: 'name',
                 did: score?.node?.creator?.id,
+                onEdit:
+                  sessId === score?.node?.creator?.id
+                    ? (comment: string, score: number) => {
+                        setScoreModalProps({
+                          open: true,
+                          defaultComment: comment,
+                          defaultScore: score,
+                        })
+                      }
+                    : undefined,
               })) || []
             )?.reverse()}
           />
           <ScoreModal
-            open={isScoreModalShow}
-            onClose={() => setIsScoreModalShow(false)}
+            // open={isScoreModalShow}
+            {...scoreModalProps}
+            onClose={() => setScoreModalProps(defaultScoreModalProps)}
             submitAction={async ({ comment, score }) => {
               await submitNewScore({ text: comment, value: score })
-              setIsScoreModalShow(false)
+              setScoreModalProps(defaultScoreModalProps)
               handleGetThreadInfo(threadId)
             }}
             did={sessId}
