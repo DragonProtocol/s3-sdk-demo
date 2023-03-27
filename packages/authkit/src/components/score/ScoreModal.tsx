@@ -1,18 +1,27 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react"
 
-import { Flex, Button } from 'rebass/styled-components'
-import { Textarea } from '@rebass/forms'
-import styled from 'styled-components'
+import { Flex, Button } from "rebass/styled-components"
+import { Textarea } from "@rebass/forms"
+import styled from "styled-components"
 
-import Modal from '../modal/Modal'
-import UserAvatar from '../avatar/UserAvatar'
-import ScoreRate from './ScoreRate'
+import Modal from "../modal/Modal"
+import UserAvatar from "../avatar/UserAvatar"
+import ScoreRate from "./ScoreRate"
 
 export interface ScoreModal {
   open: boolean
   onClose: () => void
-  submitAction: ({ comment, score }: { comment: string; score: number }) => void
+  submitAction: ({
+    comment,
+    score,
+    scoreId,
+  }: {
+    comment: string
+    score: number
+    scoreId?: string
+  }) => void
   did: string
+  scoreId?: string
   defaultComment?: string
   defaultScore?: number
 }
@@ -22,15 +31,15 @@ function ScoreModal({
   onClose,
   did,
   submitAction,
+  scoreId,
   defaultComment,
   defaultScore,
 }: ScoreModal) {
   const [score, setScore] = useState(0)
-  const [comment, setComment] = useState('')
+  const [comment, setComment] = useState("")
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    
     if (defaultComment) {
       setComment(defaultComment)
     }
@@ -38,21 +47,20 @@ function ScoreModal({
     if (defaultScore) {
       setScore(defaultScore)
     }
-
   }, [defaultScore, defaultComment])
 
   return (
     <ScoreModalWrapper>
       <Modal
-        title={'Rating & Review'}
+        title={"Rating & Review"}
         isOpen={open}
         onClose={onClose}
         contentClassName="us3r-ScoreModal__content"
       >
         <Flex
           sx={{
-            flexDirection: 'column',
-            alignItems: 'center',
+            flexDirection: "column",
+            alignItems: "center",
             gap: 3,
           }}
           className="us3r-ScoreModal__options"
@@ -73,9 +81,9 @@ function ScoreModal({
           />
           <Flex
             sx={{
-              justifyContent: 'space-between',
-              columnGap: '10px',
-              width: '100%',
+              justifyContent: "space-between",
+              columnGap: "10px",
+              width: "100%",
             }}
           >
             <CloseBtn variant="outline" mr={2} onClick={onClose}>
@@ -84,7 +92,7 @@ function ScoreModal({
             <SubmitBtn
               onClick={async () => {
                 setLoading(true)
-                await submitAction({ comment, score })
+                await submitAction({ comment, score, scoreId })
                 setLoading(false)
               }}
               disabled={loading || !comment || !score}
@@ -97,7 +105,7 @@ function ScoreModal({
                   <div />
                 </StyledLdsRing>
               ) : (
-                'Submit'
+                "Submit"
               )}
             </SubmitBtn>
           </Flex>
