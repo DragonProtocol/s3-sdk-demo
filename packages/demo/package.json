@@ -9,7 +9,7 @@
     "@types/styled-components": "^5.1.26",
     "@us3r-network/authkit": "^0.3",
     "@us3r-network/profile": "^0.1.4",
-    "@us3r-network/thread": "^0.1.0",
+    "@us3r-network/thread": "^0.2.0",
     "dayjs": "^1.11.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
