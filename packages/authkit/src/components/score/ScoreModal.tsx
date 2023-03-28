@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { Flex, Button } from "rebass/styled-components"
 import { Textarea } from "@rebass/forms"
@@ -11,14 +11,43 @@ import ScoreRate from "./ScoreRate"
 export interface ScoreModal {
   open: boolean
   onClose: () => void
-  submitAction: ({ comment, score }: { comment: string; score: number }) => void
+  submitAction: ({
+    comment,
+    score,
+    scoreId,
+  }: {
+    comment: string
+    score: number
+    scoreId?: string
+  }) => void
   did: string
+  scoreId?: string
+  defaultComment?: string
+  defaultScore?: number
 }
 
-function ScoreModal({ open, onClose, did, submitAction }: ScoreModal) {
+function ScoreModal({
+  open,
+  onClose,
+  did,
+  submitAction,
+  scoreId,
+  defaultComment,
+  defaultScore,
+}: ScoreModal) {
   const [score, setScore] = useState(0)
   const [comment, setComment] = useState("")
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (defaultComment) {
+      setComment(defaultComment)
+    }
+
+    if (defaultScore) {
+      setScore(defaultScore)
+    }
+  }, [defaultScore, defaultComment])
 
   return (
     <ScoreModalWrapper>
@@ -63,7 +92,7 @@ function ScoreModal({ open, onClose, did, submitAction }: ScoreModal) {
             <SubmitBtn
               onClick={async () => {
                 setLoading(true)
-                await submitAction({ comment, score })
+                await submitAction({ comment, score, scoreId })
                 setLoading(false)
               }}
               disabled={loading || !comment || !score}

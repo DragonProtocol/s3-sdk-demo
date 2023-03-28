@@ -1,11 +1,11 @@
-import styled from "styled-components"
-import { Box, BoxProps } from "rebass/styled-components"
-import { Rate, Progress } from "antd"
+import styled from 'styled-components'
+import { Box, BoxProps } from 'rebass/styled-components'
+import { Rate, Progress } from 'antd'
 
-import { useUs3rProfileContext } from "@us3r-network/profile"
-import { useUs3rAuthModal } from "../provider/AuthModalContext"
+import { useUs3rProfileContext } from '@us3r-network/profile'
+import { useUs3rAuthModal } from '../provider/AuthModalContext'
 
-import ScoreRate from "./ScoreRate"
+import ScoreRate from './ScoreRate'
 
 export default function ScoreLine({
   onRating,
@@ -47,7 +47,8 @@ export default function ScoreLine({
   )
 }
 
-const ScoreLineContainer = styled(Box)`
+const ScoreLineContainer = styled.button`
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -56,12 +57,18 @@ const ScoreLineContainer = styled(Box)`
   padding: 10px 20px;
   border: 1px solid #39424c;
   border-radius: 10px;
-
   cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    pointer-events: auto;
+    opacity: 0.95;
+  }
 `
 
 const RatingButton = styled(Box)`
   display: flex;
+  align-items: center;
 
   /* color: #718096; */
 

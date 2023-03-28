@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react"
 
-import styled from 'styled-components'
-import { Box } from 'rebass/styled-components'
-import ReactStars from 'react-rating-stars-component'
+import styled from "styled-components"
+import { Box } from "rebass/styled-components"
+import ReactStars from "react-rating-stars-component"
 
 interface ReactStarsProps {
   classNames?: string
@@ -66,6 +66,9 @@ export default function ScoreRate(props: ReactStarsProps) {
 }
 
 const ScoreRateContainer = styled(Box)`
+  span {
+    font-size: 20px !important;
+  }
   svg {
     fill: currentColor;
   }

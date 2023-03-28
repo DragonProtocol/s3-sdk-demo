@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react"
 
-import { Box, Text } from 'rebass/styled-components'
-import ReviewScoreCard, { ReviewScoreCardProps } from './ReviewScoreCard'
-import { useInView } from 'react-intersection-observer'
+import { Box, BoxProps } from "rebass/styled-components"
+import ReviewScoreCard, { ReviewScoreCardProps } from "./ReviewScoreCard"
+import { useInView } from "react-intersection-observer"
 
-import { useGetThreadScoreInfo } from './hook'
+import { useGetThreadScoreInfo } from "./hook"
 
 export default function ReviewScoreCardList({
   scoreList,
@@ -13,7 +13,7 @@ export default function ReviewScoreCardList({
 }: {
   threadId?: string
   scoreList?: Array<ReviewScoreCardProps & { key: string }>
-}) {
+} & BoxProps) {
   const [page, setPage] = useState<number>(1)
   const { ref: inviewRef, inView } = useInView({
     threshold: 0,
@@ -30,9 +30,9 @@ export default function ReviewScoreCardList({
     <Box
       {...otherProps}
       sx={{
-        display: 'grid',
+        display: "grid",
         gridGap: 3,
-        gridTemplateColumns: 'repeat(auto-fit, minmax(282px, 1fr))',
+        gridTemplateColumns: "repeat(auto-fit, minmax(282px, 1fr))",
       }}
     >
       {(scoreList || threadScoreList || [])
@@ -40,7 +40,7 @@ export default function ReviewScoreCardList({
         ?.map((item: any) => (
           <ReviewScoreCard {...item} />
         ))}
-      <div style={{ height: '30px' }} ref={inviewRef} />
+      <div style={{ height: "30px" }} ref={inviewRef} />
     </Box>
   )
 }
