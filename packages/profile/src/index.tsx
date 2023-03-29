@@ -4,25 +4,40 @@ import { ComposeClient } from "@composedb/client";
 import { RuntimeCompositeDefinition } from "@composedb/types";
 
 import { AuthChain, Us3rAuth } from "@us3r-network/auth";
-import { definition as profileDefinition } from "./definition/profile-definition";
+import { definition as profileDefinition } from "./definition/profile-runtime-composite";
 import {
   mutationPersonalProfile,
   queryPersonalProfile,
   queryProfileWithDid,
 } from "./api";
 
-const CeramicContext = createContext<{
-  us3rAuth: Us3rAuth;
-  us3rAuthValid: boolean;
-  getProfileWithDid: (did: string) => Promise<any>;
-  updateProfile: (name: string) => Promise<void>;
-  connectUs3r: (chain?: AuthChain) => Promise<void>;
-  disconnect: () => Promise<void>;
-  sessId: string;
-  profile?: {
-    name: string;
-  };
-} | null>(null);
+export type WalletChainType = "EVM" | "SOLANA";
+
+export type Wallet = {
+  chain: WalletChainType;
+  address: string;
+  primary: boolean;
+};
+
+const CeramicContext =
+  createContext<{
+    us3rAuth: Us3rAuth;
+    us3rAuthValid: boolean;
+    getProfileWithDid: (did: string) => Promise<any>;
+    updateProfile: (data: {
+      name: string;
+      avatar: string;
+      wallets: Wallet[];
+      bio: string;
+      tags: string[];
+    }) => Promise<void>;
+    connectUs3r: (chain?: AuthChain) => Promise<void>;
+    disconnect: () => Promise<void>;
+    sessId: string;
+    profile?: {
+      name: string;
+    };
+  } | null>(null);
 
 const us3rAuth = new Us3rAuth();
 export const Us3rProfileProvider = ({
@@ -37,9 +52,10 @@ export const Us3rProfileProvider = ({
   });
   const [us3rAuthValid, setUs3rAuthValid] = useState(false);
   const [sessId, setSessId] = useState("");
-  const [profile, setProfile] = useState<{
-    name: string;
-  }>();
+  const [profile, setProfile] =
+    useState<{
+      name: string;
+    }>();
 
   const getPersonalProfile = useCallback(async () => {
     if (!profileComposeClient.context.isAuthenticated()) {
@@ -50,20 +66,27 @@ export const Us3rProfileProvider = ({
     if (profile.errors) {
       throw profile.errors;
     }
-    return (profile?.data?.viewer as any)?.newGenericProfile;
+    return (profile?.data?.viewer as any)?.profile;
   }, []);
 
-  const updatePersonalProfile = useCallback(async (name: string) => {
-    if (!profileComposeClient.context.isAuthenticated()) {
-      throw new Error("authorized with wallet first");
-    }
-    const update = await mutationPersonalProfile(profileComposeClient, {
-      name,
-    });
-    if (update.errors) {
-      throw update.errors;
-    }
-  }, []);
+  const updatePersonalProfile = useCallback(
+    async (data: {
+      name: string;
+      avatar: string;
+      wallets: Wallet[];
+      bio: string;
+      tags: string[];
+    }) => {
+      if (!profileComposeClient.context.isAuthenticated()) {
+        throw new Error("authorized with wallet first");
+      }
+      const update = await mutationPersonalProfile(profileComposeClient, data);
+      if (update.errors) {
+        throw update.errors;
+      }
+    },
+    []
+  );
 
   const getProfileWithDid = useCallback(async (did: string) => {
     const res = await queryProfileWithDid(profileComposeClient, did);
@@ -103,8 +126,14 @@ export const Us3rProfileProvider = ({
   }, [profileComposeClient]);
 
   const updateProfile = useCallback(
-    async (name: string) => {
-      await updatePersonalProfile(name);
+    async (data: {
+      name: string;
+      avatar: string;
+      wallets: Wallet[];
+      bio: string;
+      tags: string[];
+    }) => {
+      await updatePersonalProfile(data);
       const profile = await getPersonalProfile();
       setProfile(profile);
     },
