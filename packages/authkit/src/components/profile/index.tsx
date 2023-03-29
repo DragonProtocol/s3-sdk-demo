@@ -24,8 +24,8 @@ export default function Profile({ did }: { did: string }) {
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
   const [bio, setBio] = useState("");
-  const [tags, setTags] = useState<Array<string>>([]);
-  const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [tags, setTags] = useState<Array<string>>();
+  const [wallets, setWallets] = useState<Wallet[]>();
   const [editing, setEditing] = useState(false);
 
   const updateProfileAction = useCallback(async () => {
@@ -33,19 +33,19 @@ export default function Profile({ did }: { did: string }) {
       name,
       avatar,
       bio,
-      tags: [...tags],
-      wallets: [...wallets],
+      tags: tags ? [...tags] : [],
+      wallets: wallets ? [...wallets] : [],
     });
   }, [name, avatar, wallets, bio, tags, updateProfile]);
 
   useEffect(() => {
     getProfileWithDid(did)
       .then((data: Profile) => {
-        setName(data.profile.name);
-        setAvatar(data.profile.avatar);
-        setBio(data.profile.bio);
-        setTags(data.profile.tags);
-        setWallets(data.profile.wallets);
+        setName(data.profile.name || "");
+        setAvatar(data.profile.avatar || "");
+        setBio(data.profile.bio || "");
+        setTags(data.profile.tags || []);
+        setWallets(data.profile.wallets || []);
       })
       .catch(console.error);
   }, [did, getProfileWithDid]);
@@ -89,7 +89,7 @@ export default function Profile({ did }: { did: string }) {
 
       <Wallets
         editing={editing}
-        wallets={wallets}
+        wallets={wallets || []}
         updateWallets={(wallets) => {
           setWallets(wallets);
         }}
@@ -97,7 +97,7 @@ export default function Profile({ did }: { did: string }) {
 
       <Tags
         editing={editing}
-        tags={tags}
+        tags={tags || []}
         updateTags={(tags) => {
           setTags(tags);
         }}
