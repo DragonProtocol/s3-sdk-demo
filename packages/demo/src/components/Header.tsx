@@ -9,17 +9,13 @@ import shortPubKey from "../utils/shortPubKey";
 export default function Header() {
   const { sessId, profile, connectUs3r, us3rAuth, us3rAuthValid } =
     useUs3rProfileContext()!;
-  const { threadComposeClient, relationsComposeClient } =
-    useUs3rThreadContext()!;
+  const { relationsComposeClient } = useUs3rThreadContext()!;
 
   const authComposeClients = useCallback(() => {
     if (us3rAuthValid && us3rAuth.valid) {
-      us3rAuth.authComposeClients([
-        threadComposeClient,
-        relationsComposeClient,
-      ]);
+      us3rAuth.authComposeClients([relationsComposeClient]);
     }
-  }, [relationsComposeClient, threadComposeClient, us3rAuth, us3rAuthValid]);
+  }, [relationsComposeClient, us3rAuth, us3rAuthValid]);
 
   useEffect(() => {
     authComposeClients();
