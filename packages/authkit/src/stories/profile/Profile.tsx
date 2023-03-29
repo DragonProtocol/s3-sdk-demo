@@ -1,11 +1,17 @@
 import React from "react";
 import { Profile } from "@us3r-network/authkit";
 import App from "../app/App";
+import { useUs3rProfileContext } from "@us3r-network/profile";
+
+const ProfileWrap = () => {
+  const { sessId } = useUs3rProfileContext()!;
+  return <Profile did={sessId} />;
+};
 
 const Page: React.VFC = () => {
   return (
     <App>
-      <Profile did="did:pkh:eip155:137:0x4630cf0fa55f83e11e43286ff04fc6930e1eb095" />
+      <ProfileWrap />
     </App>
   );
 };
