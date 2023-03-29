@@ -3,8 +3,7 @@ import { createContext, useContext } from "react";
 import { ComposeClient } from "@composedb/client";
 import { RuntimeCompositeDefinition } from "@composedb/types";
 
-import { definition as threadDefinition } from "./definition/thread-definition";
-import { definition as relationsDefinition } from "./definition/relations-definition";
+import { definition as relationsDefinition } from "./definition/thread-runtime-composite";
 
 import { Page } from "@ceramicnetwork/common";
 import {
@@ -21,7 +20,9 @@ import {
   mutationNewScore,
   mutationNewVote,
   mutationUpdateComment,
+  mutationUpdateFavor,
   mutationUpdateScore,
+  mutationUpdateVote,
 } from "./api/mutations";
 import { queryThreadListDesc } from "./api/queries";
 import {
@@ -35,7 +36,6 @@ export { Thread, Comment, Score, Vote, Favor, VoteType } from "./api/types";
 
 const ThreadCeramicContext =
   createContext<{
-    threadComposeClient: ComposeClient;
     relationsComposeClient: ComposeClient;
     getThreadList: ({ first = 10, after = "" }) => Promise<Page<Thread>>;
     getThreadListDesc: ({ last = 10, before = "" }) => Promise<Page<Thread>>;
@@ -72,10 +72,12 @@ const ThreadCeramicContext =
       text,
       threadId,
       commentId,
+      revoke = false,
     }: {
       commentId: string;
       text: string;
       threadId: string;
+      revoke?: boolean;
     }) => Promise<CreateResult>;
 
     createNewVote: ({
@@ -84,6 +86,13 @@ const ThreadCeramicContext =
     }: {
       type: VoteType;
       threadId: string;
+    }) => Promise<CreateResult>;
+
+    updateVote: (data: {
+      voteId: string;
+      type: VoteType;
+      threadId: string;
+      revoke?: boolean;
     }) => Promise<CreateResult>;
 
     createNewScore: ({
@@ -101,17 +110,29 @@ const ThreadCeramicContext =
       text,
       threadId,
       scoreId,
+      revoke = false,
     }: {
       scoreId: string;
       value: number;
       text: string;
       threadId: string;
+      revoke?: boolean;
     }) => Promise<CreateResult>;
 
     createNewFavor: ({
       threadId,
     }: {
       threadId: string;
+    }) => Promise<CreateResult>;
+
+    updateFavor: ({
+      favorId,
+      threadId,
+      revoke = false,
+    }: {
+      favorId: string;
+      threadId: string;
+      revoke?: boolean;
     }) => Promise<CreateResult>;
   } | null>(null);
 
@@ -121,10 +142,6 @@ export const Us3rThreadProvider = ({
 }: React.PropsWithChildren & {
   ceramicHost: string;
 }) => {
-  const threadComposeClient = new ComposeClient({
-    ceramic: ceramicHost,
-    definition: threadDefinition as RuntimeCompositeDefinition,
-  });
   const relationsComposeClient = new ComposeClient({
     ceramic: ceramicHost,
     definition: relationsDefinition as RuntimeCompositeDefinition,
@@ -239,15 +256,18 @@ export const Us3rThreadProvider = ({
       text,
       threadId,
       commentId,
+      revoke,
     }: {
       text: string;
       threadId: string;
       commentId: string;
+      revoke?: boolean;
     }) => {
       return await mutationUpdateComment(relationsComposeClient, {
         text,
         threadId,
         commentId,
+        revoke,
       });
     },
     [relationsComposeClient]
@@ -260,9 +280,50 @@ export const Us3rThreadProvider = ({
     [relationsComposeClient]
   );
 
+  const updateFavor = useCallback(
+    async ({
+      favorId,
+      threadId,
+      revoke,
+    }: {
+      favorId: string;
+      threadId: string;
+      revoke?: boolean;
+    }) => {
+      return await mutationUpdateFavor(relationsComposeClient, {
+        favorId,
+        threadId,
+        revoke,
+      });
+    },
+    [relationsComposeClient]
+  );
+
   const createNewVote = useCallback(
     async ({ threadId, type }: { threadId: string; type: VoteType }) => {
       return await mutationNewVote(relationsComposeClient, { threadId, type });
+    },
+    [relationsComposeClient]
+  );
+
+  const updateVote = useCallback(
+    async ({
+      voteId,
+      threadId,
+      type,
+      revoke,
+    }: {
+      voteId: string;
+      type: VoteType;
+      threadId: string;
+      revoke?: boolean;
+    }) => {
+      return await mutationUpdateVote(relationsComposeClient, {
+        voteId,
+        threadId,
+        type,
+        revoke,
+      });
     },
     [relationsComposeClient]
   );
@@ -292,17 +353,20 @@ export const Us3rThreadProvider = ({
       threadId,
       text,
       value,
+      revoke,
     }: {
       scoreId: string;
       threadId: string;
       text: string;
       value: number;
+      revoke?: boolean;
     }) => {
       return await mutationUpdateScore(relationsComposeClient, {
         threadId,
         text,
         value,
         scoreId,
+        revoke,
       });
     },
     [relationsComposeClient]
@@ -311,7 +375,6 @@ export const Us3rThreadProvider = ({
   return (
     <ThreadCeramicContext.Provider
       value={{
-        threadComposeClient,
         relationsComposeClient,
         getThreadList,
         getThreadListDesc,
@@ -325,7 +388,9 @@ export const Us3rThreadProvider = ({
         createNewComment,
         updateComment,
         createNewFavor,
+        updateFavor,
         createNewVote,
+        updateVote,
         createNewScore,
         updateScore,
       }}

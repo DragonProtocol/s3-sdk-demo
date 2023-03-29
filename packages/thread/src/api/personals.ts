@@ -62,6 +62,7 @@ export async function queryPersonalFavorList(
             edges {
               node {
                 id
+                revoke
                 creator {
                   id
                 }
@@ -110,6 +111,7 @@ export async function queryPersonalScoreList(
                 id
                 text
                 value
+                revoke
                 thread {
                   id
                   url
@@ -154,6 +156,7 @@ export async function queryPersonalCommentList(
               node {
                 id
                 text
+                revoke
                 thread {
                   id
                   url
@@ -198,6 +201,7 @@ export async function queryPersonalVoteList(
               node {
                 id
                 type
+                revoke
                 thread {
                   id
                   url
