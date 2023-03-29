@@ -105,6 +105,7 @@ export async function queryThreadInfo(
                 node {
                   id
                   type
+                  revoke
                   creator {
                     id
                   }
@@ -117,6 +118,7 @@ export async function queryThreadInfo(
                 node {
                   id
                   text
+                  revoke
                   creator {
                     id
                   }
@@ -128,6 +130,7 @@ export async function queryThreadInfo(
               edges {
                 node {
                   id
+                  revoke
                   creator {
                     id
                   }
@@ -141,6 +144,7 @@ export async function queryThreadInfo(
                   id
                   text
                   value
+                  revoke
                   creator {
                     id
                   }
