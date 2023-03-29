@@ -22,3 +22,5 @@ export { default as ReviewScoreCardList } from "./score/ReviewScoreCardList";
 export { Score } from "./score/ScoreDashboard";
 
 export { default as Username } from "./username";
+
+export { default as Profile } from "./profile";
