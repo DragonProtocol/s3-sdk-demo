@@ -2,9 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { Box } from "rebass/styled-components";
 import { useUs3rProfileContext } from "@us3r-network/profile";
-import { Page } from "@ceramicnetwork/common";
 import { useUs3rAuthModal } from "../provider/AuthModalContext";
-import { Favor, Thread, useUs3rThreadContext } from "@us3r-network/thread";
+import { Thread, useUs3rThreadContext } from "@us3r-network/thread";
 import Loading from "../loading";
 
 const BtnBox = styled(Box)`
@@ -21,12 +20,11 @@ const BtnBox = styled(Box)`
 `;
 
 export default function FavorBtn({ threadId }: { threadId: string }) {
-  const { sessId, us3rAuthValid } = useUs3rProfileContext()!;
+  const { sessId } = useUs3rProfileContext()!;
   const { openLoginModal } = useUs3rAuthModal();
-  const { getPersonalFavorList, createNewFavor, getThreadInfo } =
+  const { updateFavor, createNewFavor, getThreadInfo } =
     useUs3rThreadContext()!;
 
-  const [personalFavors, setPersonalFavors] = useState<Page<Favor>>();
   const [loading, setLoading] = useState(false);
   const [threadInfo, setThreadInfo] = useState<Thread>();
   const [mounted, setMounted] = useState(false);
@@ -43,16 +41,6 @@ export default function FavorBtn({ threadId }: { threadId: string }) {
     [getThreadInfo]
   );
 
-  const fetchPersonalFavors = useCallback(async () => {
-    if (!us3rAuthValid) return;
-    try {
-      const data = await getPersonalFavorList({ first: 1000 });
-      setPersonalFavors(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [us3rAuthValid]);
-
   const submitNewFavor = useCallback(async () => {
     await createNewFavor({ threadId: threadId });
     await fetchThreadInfo(threadId);
@@ -64,23 +52,30 @@ export default function FavorBtn({ threadId }: { threadId: string }) {
 
   useEffect(() => {
     if (!mounted) return;
-    fetchPersonalFavors();
     threadId && fetchThreadInfo(threadId);
-  }, [fetchPersonalFavors, threadId, mounted]);
+  }, [threadId, mounted]);
+
+  const userFavor = useMemo(() => {
+    const userFavor = threadInfo?.favors.edges.find(
+      (item) => item.node.creator.id === sessId
+    );
+    return userFavor;
+  }, [threadInfo, threadId, sessId]);
 
   const hasFavored = useMemo(() => {
-    if (!personalFavors) return false;
-    const include = personalFavors.edges.filter(({ node }) => {
-      return node.thread?.id === threadId;
-    });
-    return include.length > 0;
-  }, [personalFavors, threadId]);
+    return userFavor && !userFavor.node.revoke;
+  }, [userFavor]);
 
   return (
     <BtnBox
       onClick={async () => {
-        if (hasFavored) {
-          console.log({ hasFavored });
+        if (userFavor) {
+          await updateFavor({
+            favorId: userFavor.node.id,
+            threadId: threadId,
+            revoke: !userFavor.node.revoke,
+          });
+          threadId && fetchThreadInfo(threadId);
           return;
         }
         if (!sessId) {
@@ -90,7 +85,6 @@ export default function FavorBtn({ threadId }: { threadId: string }) {
         setLoading(true);
         await submitNewFavor();
         setLoading(false);
-        fetchPersonalFavors();
       }}
     >
       {(loading && <Loading />) || (
