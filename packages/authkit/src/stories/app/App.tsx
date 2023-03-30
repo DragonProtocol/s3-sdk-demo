@@ -24,7 +24,7 @@ const authToolTypes = [
   AuthToolType.phantom_wallet,
 ];
 const App: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
-  const [theme, setTheme] = React.useState<ThemeType>("light");
+  const [theme, setTheme] = React.useState<ThemeType>("dark");
   return (
     <Us3rProfileProvider ceramicHost={ceramicHost}>
       <Us3rThreadProvider ceramicHost={ceramicHost}>
