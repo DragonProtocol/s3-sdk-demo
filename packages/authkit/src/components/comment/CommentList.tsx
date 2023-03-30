@@ -51,8 +51,7 @@ const CountItem = styled(Box)`
 
 export default function CommentList({ threadId }: { threadId: string }) {
   const [threadInfo, setThreadInfo] = useState<Thread>();
-  const { getThreadInfo, createNewComment, createNewFavor } =
-    useUs3rThreadContext()!;
+  const { getThreadInfo, createNewComment } = useUs3rThreadContext()!;
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -84,11 +83,6 @@ export default function CommentList({ threadId }: { threadId: string }) {
     },
     [createNewComment, threadId, fetchThreadInfo]
   );
-
-  const submitNewFavor = useCallback(async () => {
-    await createNewFavor({ threadId: threadId });
-    await fetchThreadInfo(threadId);
-  }, [createNewFavor, threadId, fetchThreadInfo]);
 
   return (
     <CommentListContainer>

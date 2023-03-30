@@ -70,19 +70,15 @@ export default function Us3rAuthProvider({
 
   const { us3rAuth, us3rAuthValid, connectUs3r, disconnect } =
     useUs3rProfileContext()!;
-  const { threadComposeClient, relationsComposeClient } =
-    useUs3rThreadContext()!;
+  const { relationsComposeClient } = useUs3rThreadContext()!;
 
   const [authComposeClientsValid, setAuthComposeClientsValid] = useState(false);
   const authComposeClients = useCallback(() => {
     if (us3rAuthValid && us3rAuth.valid) {
-      us3rAuth.authComposeClients([
-        threadComposeClient,
-        relationsComposeClient,
-      ]);
+      us3rAuth.authComposeClients([relationsComposeClient]);
       setAuthComposeClientsValid(true);
     }
-  }, [relationsComposeClient, threadComposeClient, us3rAuth, us3rAuthValid]);
+  }, [relationsComposeClient, us3rAuth, us3rAuthValid]);
 
   useEffect(() => {
     authComposeClients();

@@ -1,15 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { Box, Button } from "rebass/styled-components";
+import { Box } from "rebass/styled-components";
 import { useUs3rProfileContext } from "@us3r-network/profile";
-import { Edge, Page } from "@ceramicnetwork/common";
 import { useUs3rAuthModal } from "../provider/AuthModalContext";
-import {
-  Thread,
-  useUs3rThreadContext,
-  Vote,
-  VoteType,
-} from "@us3r-network/thread";
+import { Thread, useUs3rThreadContext, VoteType } from "@us3r-network/thread";
 import Loading from "../loading";
 
 const BtnBox = styled(Box)`
@@ -26,13 +20,12 @@ const BtnBox = styled(Box)`
 `;
 
 export default function VoteBtn({ threadId }: { threadId: string }) {
-  const { sessId, us3rAuthValid } = useUs3rProfileContext()!;
+  const { sessId } = useUs3rProfileContext()!;
   const { openLoginModal } = useUs3rAuthModal();
-  const { getThreadInfo, getPersonalVoteList, createNewVote } =
-    useUs3rThreadContext()!;
+  const { getThreadInfo, createNewVote, updateVote } = useUs3rThreadContext()!;
   const [threadInfo, setThreadInfo] = useState<Thread>();
 
-  const [personalVotes, setPersonalVotes] = useState<Page<Vote>>();
+  // const [personalVotes, setPersonalVotes] = useState<Page<Vote>>();
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -48,16 +41,6 @@ export default function VoteBtn({ threadId }: { threadId: string }) {
     [getThreadInfo]
   );
 
-  const fetchPersonalVote = useCallback(async () => {
-    if (!us3rAuthValid) return;
-    try {
-      const data = await getPersonalVoteList({ first: 1000 });
-      setPersonalVotes(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [us3rAuthValid]);
-
   const submitNewVote = useCallback(async () => {
     await createNewVote({ threadId: threadId, type: VoteType.UP_VOTE });
     await fetchThreadInfo(threadId);
@@ -69,24 +52,32 @@ export default function VoteBtn({ threadId }: { threadId: string }) {
 
   useEffect(() => {
     if (!mounted) return;
-    fetchPersonalVote();
     threadId && fetchThreadInfo(threadId);
-  }, [fetchPersonalVote, threadId, mounted]);
+  }, [threadId, mounted]);
+
+  const userVote = useMemo(() => {
+    const userVote = threadInfo?.votes.edges.find(
+      (item) => item.node.creator.id === sessId
+    );
+    return userVote;
+  }, [threadInfo, threadId, sessId]);
 
   const hasVoted = useMemo(() => {
-    if (!personalVotes) return false;
-    const include = personalVotes.edges.filter(({ node }) => {
-      return node.thread?.id === threadId;
-    });
-    return include.length > 0;
-  }, [personalVotes, threadId]);
+    return userVote && !userVote.node.revoke;
+  }, [userVote]);
 
   return (
     <BtnBox
       className="us3r-content-vote"
       onClick={async () => {
-        if (hasVoted) {
-          console.log({ hasVoted });
+        if (userVote) {
+          await updateVote({
+            voteId: userVote.node.id,
+            threadId: threadId,
+            type: VoteType.DOWN_VOTE,
+            revoke: !userVote.node.revoke,
+          });
+          threadId && fetchThreadInfo(threadId);
           return;
         }
         if (!sessId) {
@@ -96,7 +87,7 @@ export default function VoteBtn({ threadId }: { threadId: string }) {
         setLoading(true);
         await submitNewVote();
         setLoading(false);
-        fetchPersonalVote();
+        threadId && fetchThreadInfo(threadId);
       }}
     >
       {(loading && <Loading />) || (
