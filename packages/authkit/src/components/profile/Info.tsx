@@ -76,6 +76,7 @@ const AvatarBox = styled.div`
   align-items: center;
   padding: 20px;
   width: 360px;
+  box-sizing: border-box;
   background: #1b1e23;
   border-radius: 20px;
   .avatar-box {

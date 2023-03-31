@@ -1,6 +1,6 @@
 {
   "name": "@us3r-network/authkit",
-  "version": "0.6.1",
+  "version": "0.6.4",
   "description": "",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -28,8 +28,8 @@
     "react-intersection-observer": "^9.3.4"
   },
   "peerDependencies": {
-    "@us3r-network/profile": "0.1.6",
-    "@us3r-network/thread": "^0.2.0",
+    "@us3r-network/profile": "^0.2.0",
+    "@us3r-network/thread": "^0.3.0",
     "react": "^18.2.0"
   },
   "devDependencies": {
