@@ -28,11 +28,13 @@ export const Score = ({
   )
 }
 
-export const ScoreMin = ({ score }: { score?: number }) => {
+export const ScoreMin = ({ threadId }: { threadId?: string }) => {
+  const { scoreAvg } = useGetThreadScoreInfo(threadId)
+  
   return (
     <Flex>
       <ScoreRate value={1} count={1} />
-      <ScoreNumMin>{score}</ScoreNumMin>
+      <ScoreNumMin>{scoreAvg}</ScoreNumMin>
     </Flex>
   )
 }

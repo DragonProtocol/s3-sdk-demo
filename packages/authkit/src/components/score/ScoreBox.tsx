@@ -128,12 +128,6 @@ export default function ScoreBox({ threadId }: { threadId: string }) {
                 onEdit:
                   sessId === score?.node?.creator?.id
                     ? (scoreId: string, comment: string, score: number) => {
-                        console.log(
-                          scoreId,
-                          comment,
-                          score,
-                          'scorescorescorescorescorescorescore'
-                        )
                         setScoreModalProps({
                           open: true,
                           scoreId,
