@@ -1,7 +1,7 @@
 import Modal from "../modal/Modal";
 import { Button, Flex } from "rebass/styled-components";
 import { uploadImage } from "../../utils/updateFile";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
 export interface AvatarEditModalProps {
@@ -24,6 +24,12 @@ export default function AvatarEditModal({
   const [tempAvatar, setTempAvatar] = useState(info.avatar || "");
   const [tempName, setTempName] = useState(info.name || "");
   const [tempBio, setTempBio] = useState(info.bio || "");
+
+  useEffect(() => {
+    setTempAvatar(info.avatar);
+    setTempName(info.name);
+    setTempBio(info.bio);
+  }, [info]);
 
   const saveAction = useCallback(async () => {
     await updateInfo(tempAvatar, tempName, tempBio);
