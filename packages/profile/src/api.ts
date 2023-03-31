@@ -1,5 +1,5 @@
 import { ComposeClient } from "@composedb/client";
-import { Wallet, WalletChainType } from ".";
+import { Profile, Wallet, WalletChainType } from ".";
 
 export async function queryPersonalProfile(
   profileComposeClient: ComposeClient
@@ -67,19 +67,7 @@ export async function mutationUpdatePersonalProfile(
 
 export async function mutationPersonalProfile(
   profileComposeClient: ComposeClient,
-  {
-    name,
-    avatar,
-    wallets,
-    bio,
-    tags,
-  }: {
-    name: string;
-    avatar: string;
-    wallets: Wallet[];
-    bio: string;
-    tags: string[];
-  }
+  { name, avatar, wallets, bio, tags }: Profile
 ) {
   const query = `
   mutation($input: CreateProfileInput!) {

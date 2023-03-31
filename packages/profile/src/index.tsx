@@ -12,7 +12,13 @@ import {
 } from "./api";
 
 export type WalletChainType = "EVM" | "SOLANA";
-
+export type Profile = {
+  name?: string;
+  avatar?: string;
+  wallets?: Wallet[];
+  bio?: string;
+  tags?: string[];
+};
 export type Wallet = {
   chain: WalletChainType;
   address: string;
@@ -24,19 +30,11 @@ const CeramicContext =
     us3rAuth: Us3rAuth;
     us3rAuthValid: boolean;
     getProfileWithDid: (did: string) => Promise<any>;
-    updateProfile: (data: {
-      name: string;
-      avatar: string;
-      wallets: Wallet[];
-      bio: string;
-      tags: string[];
-    }) => Promise<void>;
+    updateProfile: (data: Profile) => Promise<void>;
     connectUs3r: (chain?: AuthChain) => Promise<void>;
     disconnect: () => Promise<void>;
     sessId: string;
-    profile?: {
-      name: string;
-    };
+    profile?: Profile;
   } | null>(null);
 
 const us3rAuth = new Us3rAuth();
@@ -52,10 +50,7 @@ export const Us3rProfileProvider = ({
   });
   const [us3rAuthValid, setUs3rAuthValid] = useState(false);
   const [sessId, setSessId] = useState("");
-  const [profile, setProfile] =
-    useState<{
-      name: string;
-    }>();
+  const [profile, setProfile] = useState<Profile>();
 
   const getPersonalProfile = useCallback(async () => {
     if (!profileComposeClient.context.isAuthenticated()) {
@@ -69,24 +64,15 @@ export const Us3rProfileProvider = ({
     return (profile?.data?.viewer as any)?.profile;
   }, []);
 
-  const updatePersonalProfile = useCallback(
-    async (data: {
-      name: string;
-      avatar: string;
-      wallets: Wallet[];
-      bio: string;
-      tags: string[];
-    }) => {
-      if (!profileComposeClient.context.isAuthenticated()) {
-        throw new Error("authorized with wallet first");
-      }
-      const update = await mutationPersonalProfile(profileComposeClient, data);
-      if (update.errors) {
-        throw update.errors;
-      }
-    },
-    []
-  );
+  const updatePersonalProfile = useCallback(async (data: Profile) => {
+    if (!profileComposeClient.context.isAuthenticated()) {
+      throw new Error("authorized with wallet first");
+    }
+    const update = await mutationPersonalProfile(profileComposeClient, data);
+    if (update.errors) {
+      throw update.errors;
+    }
+  }, []);
 
   const getProfileWithDid = useCallback(async (did: string) => {
     const res = await queryProfileWithDid(profileComposeClient, did);
@@ -126,13 +112,7 @@ export const Us3rProfileProvider = ({
   }, [profileComposeClient]);
 
   const updateProfile = useCallback(
-    async (data: {
-      name: string;
-      avatar: string;
-      wallets: Wallet[];
-      bio: string;
-      tags: string[];
-    }) => {
+    async (data: Profile) => {
       await updatePersonalProfile(data);
       const profile = await getPersonalProfile();
       setProfile(profile);
