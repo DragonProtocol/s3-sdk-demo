@@ -5,6 +5,7 @@ import ExampleScoreBox from "./score/ScoreBox";
 // import ExampleReviewScoreCard from "./score/ReviewScoreCard";
 import ExampleReviewScoreCardList from "./score/ReviewScoreCardList";
 import ExampleScore from "./score/Score";
+import ExampleScoreMin from "./score/ScoreMin";
 // import ExampleScoreModal from "./score/ScoreModal";
 
 
@@ -26,10 +27,10 @@ const Template2: ComponentStory<typeof ExampleScore> = (args) => (
 );
 export const Score = Template2.bind({});
 
-// const Template3: ComponentStory<typeof ExampleReviewScoreCard> = (args) => (
-//   <ExampleReviewScoreCard {...args} />
-// );
-// export const ReviewScoreCrad = Template3.bind({});
+const Template3: ComponentStory<typeof ExampleScoreMin> = (args) => (
+  <ExampleScoreMin {...args} />
+);
+export const ScoreMin = Template3.bind({});
 
 const Template4: ComponentStory<typeof ExampleReviewScoreCardList> = (args) => (
   <ExampleReviewScoreCardList {...args} />

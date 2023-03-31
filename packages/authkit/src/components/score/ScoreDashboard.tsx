@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Box, BoxProps, Text } from 'rebass/styled-components'
+import { Box, BoxProps, Text, Flex } from 'rebass/styled-components'
 
 import { useGetThreadScoreInfo } from './hook'
 import ScoreRate from './ScoreRate'
@@ -25,6 +25,15 @@ export const Score = ({
       </ScoreText>
       <ScoreRate value={score || scoreAvg || 0} count={5} />
     </>
+  )
+}
+
+export const ScoreMin = ({ score }: { score?: number }) => {
+  return (
+    <Flex>
+      <ScoreRate value={1} count={1} />
+      <ScoreNumMin>{score}</ScoreNumMin>
+    </Flex>
   )
 }
 
@@ -149,6 +158,16 @@ const ScoreProgress = styled(Box)<{ percent: number }>`
     left: 0;
     top: 0;
   }
+`
+
+const ScoreNumMin = styled(Text)`
+  font-family: 'Rubik';
+  font-weight: bolder;
+  font-size: 15px;
+  line-height: 23px;
+  text-align: center;
+  color: #ffd700;
+  margin-left: 2px;
 `
 
 const ScoreNum = styled(Text)`
