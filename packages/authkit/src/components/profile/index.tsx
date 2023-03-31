@@ -15,7 +15,7 @@ type ProfileData = {
 };
 type Profile = {
   id: string;
-  profile: ProfileData;
+  profile?: ProfileData;
 };
 
 export default function Profile({ did }: { did: string }) {
@@ -32,24 +32,20 @@ export default function Profile({ did }: { did: string }) {
     if (!did) return;
     try {
       const data: Profile = await getProfileWithDid(did);
+
       const currWallet = data.id.split(":").pop() || "";
-      const wallets = data.profile.wallets || [];
-      setName(data.profile.name || "");
-      setAvatar(data.profile.avatar || "");
-      setBio(data.profile.bio || "");
-      setTags(data.profile.tags || []);
-      setWallets(
-        wallets.length
-          ? [...wallets]
-          : [
-              {
-                address: currWallet,
-                primary: true,
-                chain: data.id.startsWith("did:pkh:eip") ? "EVM" : "SOLANA",
-              },
-              ...wallets,
-            ]
-      );
+      const wallets = data.profile?.wallets || [
+        {
+          address: currWallet,
+          primary: true,
+          chain: data.id.startsWith("did:pkh:eip") ? "EVM" : "SOLANA",
+        },
+      ];
+      setName(data.profile?.name || "");
+      setAvatar(data.profile?.avatar || "");
+      setBio(data.profile?.bio || "");
+      setTags(data.profile?.tags || []);
+      setWallets(wallets);
     } catch (error) {
       console.log(error);
     }
@@ -83,6 +79,7 @@ export default function Profile({ did }: { did: string }) {
     <ProfileBox>
       <NameBox>
         <Avatar
+          did={did}
           name={name}
           bio={bio}
           avatar={avatar}

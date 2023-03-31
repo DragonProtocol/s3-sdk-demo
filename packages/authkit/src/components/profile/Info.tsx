@@ -4,19 +4,25 @@ import styled from "styled-components";
 import AvatarEditModal from "./InfoModal";
 import { Text } from "rebass/styled-components";
 import EditIcon from "./EditIcon";
+import UserAvatar from "../avatar/UserAvatar";
+import { shortPubKey } from "../../utils";
 
 export default function Avatar({
+  did,
   avatar,
   name,
   bio,
   updateInfo,
 }: {
+  did: string;
   avatar: string;
   name: string;
   bio: string;
   updateInfo: (url: string, name: string, bio: string) => void;
 }) {
   const [edit, setEdit] = useState(false);
+  const currWallet = did.split(":").pop() || "";
+
   return (
     <InfoContainer>
       <AvatarBox>
@@ -24,10 +30,10 @@ export default function Avatar({
           <div className="avatar-select" onClick={() => setEdit(true)}>
             <EditIcon />
           </div>
-          <img src={avatar} alt="" />
+          {(avatar && <img src={avatar} alt="" />) || <UserAvatar did={did} />}
         </div>
         <div className="name-box">
-          <NicknameText>{name}</NicknameText>
+          <NicknameText>{name || shortPubKey(currWallet)}</NicknameText>
         </div>
         <div className="bio-box">
           <BioText>{bio}</BioText>
@@ -42,6 +48,7 @@ export default function Avatar({
           avatar,
           name,
           bio,
+          did,
         }}
       />
     </InfoContainer>

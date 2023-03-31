@@ -3,6 +3,7 @@ import { Button, Flex } from "rebass/styled-components";
 import { uploadImage } from "../../utils/updateFile";
 import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
+import UserAvatar from "../avatar/UserAvatar";
 
 export interface AvatarEditModalProps {
   open: boolean;
@@ -11,6 +12,7 @@ export interface AvatarEditModalProps {
     avatar: string;
     name: string;
     bio: string;
+    did: string;
   };
   updateInfo: (url: string, name: string, bio: string) => void;
 }
@@ -39,7 +41,9 @@ export default function AvatarEditModal({
     <Modal title={"Edit Profile"} isOpen={open} onClose={onClose}>
       <ContainerBox className="us3r-EditProfileModal__options">
         <AvatarBox>
-          <img src={tempAvatar} alt="" />
+          {(tempAvatar && <img src={tempAvatar} alt="" />) || (
+            <UserAvatar did={info.did} />
+          )}
           <div>
             <label htmlFor="avatar-input">Select Image</label>
             <input
@@ -69,9 +73,9 @@ export default function AvatarEditModal({
         </TextBox>
 
         <TextBox>
-          <input
-            type="text"
+          <textarea
             placeholder="bio"
+            rows={3}
             value={tempBio}
             onChange={(e) => {
               setTempBio(e.target.value);
@@ -127,11 +131,12 @@ const AvatarBox = styled.div`
 const TextBox = styled.div`
   display: flex;
   flex-direction: row;
-  height: 48px;
+  min-height: 48px;
   border: 1px solid #39424c;
   border-radius: 12px;
   overflow: hidden;
-  > input {
+  > input,
+  > textarea {
     padding: 0 10px;
     width: 100%;
     border: none;
@@ -139,6 +144,10 @@ const TextBox = styled.div`
     font-weight: 400;
     font-size: 16px;
     line-height: 24px;
+  }
+  > textarea {
+    resize: none;
+    padding: 10px;
   }
 `;
 
