@@ -9,17 +9,20 @@ export type Vote = {
   type: "UP_VOTE" | "DOWN_VOTE";
   creator: Creator;
   thread?: Thread;
+  revoke?: boolean;
 };
 export type Comment = {
   id: string;
   text: string;
   creator: Creator;
   thread?: Thread;
+  revoke?: boolean;
 };
 export type Favor = {
   id: string;
   creator: Creator;
   thread?: Thread;
+  revoke?: boolean;
 };
 export type Score = {
   id: string;
@@ -27,6 +30,7 @@ export type Score = {
   value: number;
   creator: Creator;
   thread?: Thread;
+  revoke?: boolean;
 };
 
 export type Thread = {

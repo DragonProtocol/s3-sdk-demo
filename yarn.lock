@@ -4660,14 +4660,41 @@
     "@typescript-eslint/types" "5.55.0"
     eslint-visitor-keys "^3.3.0"
 
-"@us3r-network/authkit@^0.2":
-  version "0.2.13"
-  resolved "https://registry.npmjs.org/@us3r-network/authkit/-/authkit-0.2.13.tgz#5b406e52b7ef8dfedd12e1a3ec8adb03a9de7d83"
-  integrity sha512-ggRLwSX+kXn3MnPyils2dT34YE2teCAw85abuGIr6Eah5Y7S3hIAjWvX8/hoF7DoVW3S//XWyjLVMwqCcqIJKg==
+"@us3r-network/authkit@^0.3":
+  version "0.3.2"
+  resolved "https://registry.npmjs.org/@us3r-network/authkit/-/authkit-0.3.2.tgz#a7a91f1668a5f9cc74bc6924c0e90dd354103a25"
+  integrity sha512-FtKtMySLioob5fhFiyoczxxaTGKHTrqzZhbOn5dqrkPpaBz4/33rpPy6O9Fuo98xwCIfO2QffFw7CzjPPv0lGQ==
   dependencies:
     "@multiavatar/multiavatar" "^1.0.7"
+    "@rebass/forms" "^4.0.6"
+    react-rating-stars-component "^2.2.0"
     rebass "^4.0.7"
     styled-components "^5.3.8"
+
+"@us3r-network/profile@0.1.6":
+  version "0.1.6"
+  resolved "https://registry.npmjs.org/@us3r-network/profile/-/profile-0.1.6.tgz#ed2b3527a745fe5e19e3c49fa81413ad8cce227a"
+  integrity sha512-J8JzvBQaFr1GH+R02g5mTp4Bwzr/HrMe2QmbjeKuZeLEbJ+Ch0rpNZhmXFg1L3W5WNk4VtYqMtacLjgSY0GfHQ==
+  dependencies:
+    "@ceramicnetwork/common" "^2.20.0"
+    "@composedb/client" "^0.4.3"
+    "@composedb/types" "^0.4.3"
+    "@types/react-dom" "^18.0.9"
+    "@us3r-network/auth" "^0.1.2"
+    react "^18.2.0"
+    react-dom "^18.2.0"
+
+"@us3r-network/thread@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.npmjs.org/@us3r-network/thread/-/thread-0.1.2.tgz#3713eb0c5bdfd6cb26cd3f8c9ac80684fe669c59"
+  integrity sha512-tM7AGQ9D5xCnVMEdl7UGjanHzdd37xJvZsLxIZRRCeaNr5pQLaRHbR5EHkbRSlnzlSG9muzooLE8gungsROyQg==
+  dependencies:
+    "@ceramicnetwork/common" "^2.20.0"
+    "@composedb/client" "^0.4.3"
+    "@composedb/types" "^0.4.3"
+    "@types/react-dom" "^18.0.9"
+    react "^18.2.0"
+    react-dom "^18.2.0"
 
 "@webassemblyjs/ast@1.11.1":
   version "1.11.1"
@@ -13413,6 +13440,11 @@ react-inspector@^5.1.0:
     is-dom "^1.0.0"
     prop-types "^15.0.0"
 
+react-intersection-observer@^9.3.4:
+  version "9.4.3"
+  resolved "https://registry.npmjs.org/react-intersection-observer/-/react-intersection-observer-9.4.3.tgz#ec84ce0c25cad548075130ea045ac5c7adf908f3"
+  integrity sha512-WNRqMQvKpupr6MzecAQI0Pj0+JQong307knLP4g/nBex7kYfIaZsPpXaIhKHR+oV8z+goUbH9e10j6lGRnTzlQ==
+
 react-is@17.0.2, react-is@^17.0.1:
   version "17.0.2"
   resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
@@ -15933,10 +15965,8 @@ watchpack@^1.7.4:
   resolved "https://registry.npmjs.org/watchpack/-/watchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ==
   dependencies:
-    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
-    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"

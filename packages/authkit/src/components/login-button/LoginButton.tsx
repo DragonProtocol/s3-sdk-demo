@@ -1,17 +1,16 @@
 import { ButtonHTMLAttributes } from "react";
 import { Text } from "rebass/styled-components";
-import { getUserDisplayName } from "../../utils";
 import UserAvatar from "../avatar/UserAvatar";
 import { useUs3rAuthModal } from "../provider/AuthModalContext";
 import { Button } from "rebass/styled-components";
 import { useUs3rProfileContext } from "@us3r-network/profile";
+import Username from "../username";
 
 export type LoginButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
 function LoginButton({ onClick, ...otherProps }: LoginButtonProps) {
-  const { sessId, profile } = useUs3rProfileContext()!;
+  const { sessId } = useUs3rProfileContext()!;
   const { openLoginModal } = useUs3rAuthModal();
-  const nameStr = getUserDisplayName(sessId, profile);
   return (
     <Button
       variant="primary"
@@ -29,7 +28,7 @@ function LoginButton({ onClick, ...otherProps }: LoginButtonProps) {
         <>
           <UserAvatar did={sessId} className="us3r-LoginButton__avatar" />
           <Text className="us3r-LoginButton__text us3r-LoginButton__text--login">
-            {nameStr}
+            <Username did={sessId} />
           </Text>
         </>
       ) : (

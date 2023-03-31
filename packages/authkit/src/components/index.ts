@@ -21,4 +21,6 @@ export { default as ScoreBox } from './score/ScoreBox'
 export { default as ReviewScoreCardList } from './score/ReviewScoreCardList'
 export { Score, ScoreMin } from './score/ScoreDashboard'
 
-export { default as Username } from './username'
+export { default as Username } from "./username";
+
+export { default as Profile } from "./profile";
