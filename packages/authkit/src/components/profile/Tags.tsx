@@ -61,6 +61,7 @@ const TagsContainer = styled.div`
     margin-top: 20px;
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
     > div {
       padding: 10px 20px;
       background: #1a1e23;
