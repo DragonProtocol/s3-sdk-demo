@@ -30,7 +30,9 @@ export const Score = ({
 
 export const ScoreMin = ({ threadId }: { threadId?: string }) => {
   const { scoreAvg } = useGetThreadScoreInfo(threadId)
-  
+
+  if (Number.isNaN(scoreAvg) || scoreAvg === 0) return null
+
   return (
     <Flex>
       <ScoreRate value={1} count={1} />
