@@ -36,20 +36,21 @@ export const useGetThreadScoreInfo = (threadId?: string) => {
         return acc
       }, 0)
       const scoreTotal = threadInfo?.scoresCount
+      if (scoreTotal > 0) {
+        const scoreAvg = Math.min(Math.round(scoreSum / scoreTotal), 5)
 
-      const scoreAvg = Math.min(Math.round(scoreSum / scoreTotal), 5)
+        const scoreList = threadInfo?.scores?.edges
+          ?.map((score) => ({
+            comment: score?.node?.text,
+            value: score?.node?.value,
+            key: score?.node?.id,
+            name: 'name',
+            did: score?.node?.creator?.id,
+          }))
+          ?.reverse()
 
-      const scoreList = threadInfo?.scores?.edges
-        ?.map((score) => ({
-          comment: score?.node?.text,
-          value: score?.node?.value,
-          key: score?.node?.id,
-          name: 'name',
-          did: score?.node?.creator?.id,
-        }))
-        ?.reverse()
-
-      setScoreInfo({ scoreAvg, scoreList })
+        setScoreInfo({ scoreAvg, scoreList })
+      }
     }
   }, [threadInfo])
 
