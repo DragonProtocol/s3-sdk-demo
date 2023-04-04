@@ -1,35 +1,27 @@
-import styled from "styled-components";
+import styled, { StyledComponentPropsWithRef } from "styled-components";
 import { Text } from "rebass/styled-components";
-import { useUs3rProfileContext } from "@us3r-network/profile";
+import { Profile, useUs3rProfileContext } from "@us3r-network/profile";
 import { useEffect, useMemo, useState } from "react";
 import { shortPubKey } from "../../utils";
 
-export default function Username({
-  did,
-  name,
-}: {
+type Props = StyledComponentPropsWithRef<"div"> & {
   did: string;
   name?: string;
-}) {
+};
+export default function Username({ did, name, ...otherProps }: Props) {
   const { getProfileWithDid } = useUs3rProfileContext()!;
-  const [didProfile, setDidProfile] =
-    useState<{
-      newGenericProfile?: {
-        name: string;
-      };
-    }>();
+  const [didProfile, setDidProfile] = useState<Profile>();
   useEffect(() => {
     if (name) return;
     getProfileWithDid(did)
       .then((data) => {
-        setDidProfile(data);
+        setDidProfile(data.profile);
       })
       .catch(console.error);
   }, [did, getProfileWithDid]);
 
   const pubkey = useMemo(() => {
     const key = did.split(":").pop();
-    console.log({ key });
     if (key) {
       return shortPubKey(key);
     }
@@ -37,8 +29,8 @@ export default function Username({
   }, []);
 
   return (
-    <NicknameText>
-      {name || didProfile?.newGenericProfile?.name || pubkey}
+    <NicknameText {...otherProps}>
+      {name || didProfile?.name || pubkey}
     </NicknameText>
   );
 }
