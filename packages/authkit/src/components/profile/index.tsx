@@ -43,7 +43,7 @@ export default function Profile({ did }: { did: string }) {
       ];
       setName(data.profile?.name || "");
       setAvatar(data.profile?.avatar || "");
-      setBio(data.profile?.bio || "");
+      setBio(data.profile?.bio || "bio");
       setTags(data.profile?.tags || []);
       setWallets(wallets);
     } catch (error) {

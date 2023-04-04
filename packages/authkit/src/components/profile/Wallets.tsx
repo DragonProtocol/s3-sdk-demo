@@ -1,4 +1,4 @@
-import { Wallet } from "@us3r-network/profile";
+import { Wallet, WalletChainType } from "@us3r-network/profile";
 import { useState } from "react";
 import styled from "styled-components";
 import { shortPubKey } from "../../utils";
@@ -65,13 +65,15 @@ export default function Wallets({
         open={edit}
         onClose={() => setEdit(false)}
         updateWallet={(wallet) => {
-          updateWallets([
+          const data = [
+            ...wallets,
             {
               address: wallet,
-              chain: "EVM",
+              chain: "EVM" as WalletChainType,
               primary: false,
             },
-          ]);
+          ];
+          updateWallets(data);
         }}
       />
     </WalletsContainer>
