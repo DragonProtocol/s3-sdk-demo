@@ -18,7 +18,7 @@ export default function Avatar({
   avatar: string;
   name: string;
   bio: string;
-  updateInfo: (url: string, name: string, bio: string) => void;
+  updateInfo: (url: string, name: string, bio: string) => Promise<void>;
 }) {
   const [edit, setEdit] = useState(false);
   const currWallet = did.split(":").pop() || "";

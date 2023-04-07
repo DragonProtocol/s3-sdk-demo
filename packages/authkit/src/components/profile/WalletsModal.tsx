@@ -2,11 +2,13 @@ import Modal from "../modal/Modal";
 import { Button, Flex } from "rebass/styled-components";
 import { useCallback, useState } from "react";
 import styled from "styled-components";
+import Loading from "../loading";
+import { GraphQLError } from "graphql";
 
 export interface WalletsEditModalProps {
   open: boolean;
   onClose: () => void;
-  updateWallet: (wallet: string) => void;
+  updateWallet: (wallet: string) => Promise<void>;
 }
 
 export default function WalletEditModal({
@@ -15,11 +17,22 @@ export default function WalletEditModal({
   updateWallet,
 }: WalletsEditModalProps) {
   const [tempWallet, setTempWallet] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const [updating, setUpdating] = useState(false);
 
   const saveAction = useCallback(async () => {
-    await updateWallet(tempWallet);
-    onClose();
+    try {
+      setUpdating(true);
+      await updateWallet(tempWallet);
+      onClose();
+    } catch (error) {
+      const errMsg = (error as ReadonlyArray<GraphQLError>)[0].toJSON().message;
+      setErrMsg(errMsg);
+    } finally {
+      setUpdating(false);
+    }
   }, [tempWallet]);
+
   return (
     <Modal title={"Add New Wallet"} isOpen={open} onClose={onClose}>
       <ContainerBox className="us3r-EditWalletsModal__options">
@@ -30,11 +43,17 @@ export default function WalletEditModal({
             value={tempWallet}
             onChange={(e) => {
               setTempWallet(e.target.value);
+              setErrMsg("");
             }}
           />
         </TextBox>
 
-        <SaveBtn onClick={saveAction}>Save</SaveBtn>
+        {(updating && (
+          <SaveBtn>
+            <Loading /> Save
+          </SaveBtn>
+        )) || <SaveBtn onClick={saveAction}>Save</SaveBtn>}
+        {errMsg && <p className="err">{errMsg}</p>}
       </ContainerBox>
     </Modal>
   );
@@ -48,6 +67,11 @@ const ContainerBox = styled(Flex)`
   gap: 10px;
   /* background: #1b1e23; */
   width: 380px;
+
+  .err {
+    color: red;
+    margin: 0;
+  }
 `;
 
 const TextBox = styled.div`

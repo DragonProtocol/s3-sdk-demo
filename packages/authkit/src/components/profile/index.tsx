@@ -83,8 +83,8 @@ export default function Profile({ did }: { did: string }) {
           name={name}
           bio={bio}
           avatar={avatar}
-          updateInfo={(avatar, name, bio) => {
-            updateProfileAction({
+          updateInfo={async (avatar, name, bio) => {
+            await updateProfileAction({
               name,
               avatar,
               bio,
@@ -95,8 +95,8 @@ export default function Profile({ did }: { did: string }) {
 
       <Wallets
         wallets={wallets || []}
-        updateWallets={(wallets) => {
-          updateProfileAction({
+        updateWallets={async (wallets) => {
+          await updateProfileAction({
             wallets,
           });
         }}

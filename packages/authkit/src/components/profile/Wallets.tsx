@@ -1,5 +1,5 @@
 import { Wallet, WalletChainType } from "@us3r-network/profile";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import styled from "styled-components";
 import { shortPubKey } from "../../utils";
 import CopyIcon from "./CopyIcon";
@@ -12,7 +12,7 @@ export default function Wallets({
   updateWallets,
 }: {
   wallets: Wallet[];
-  updateWallets: (wallets: Wallet[]) => void;
+  updateWallets: (wallets: Wallet[]) => Promise<void>;
 }) {
   const [edit, setEdit] = useState(false);
   return (
@@ -34,8 +34,8 @@ export default function Wallets({
               <div>
                 {!item.primary && (
                   <span
-                    onClick={() => {
-                      updateWallets([
+                    onClick={async () => {
+                      await updateWallets([
                         ...wallets.slice(0, index),
                         ...wallets.slice(index + 1),
                       ]);
@@ -44,17 +44,7 @@ export default function Wallets({
                     <TrashIcon />
                   </span>
                 )}
-                <span
-                  onClick={async () => {
-                    try {
-                      await navigator.clipboard.writeText(item.address);
-                    } catch (error) {
-                      console.log("Copied Fail");
-                    }
-                  }}
-                >
-                  <CopyIcon />
-                </span>
+                <Copy address={item.address} />
               </div>
             </div>
           );
@@ -64,7 +54,7 @@ export default function Wallets({
       <WalletEditModal
         open={edit}
         onClose={() => setEdit(false)}
-        updateWallet={(wallet) => {
+        updateWallet={async (wallet) => {
           const data = [
             ...wallets,
             {
@@ -73,12 +63,53 @@ export default function Wallets({
               primary: false,
             },
           ];
-          updateWallets(data);
+          await updateWallets(data);
         }}
       />
     </WalletsContainer>
   );
 }
+
+function Copy({ address }: { address: string }) {
+  const [showTint, setShowTint] = useState(false);
+  const showTintAction = useCallback(() => {
+    setShowTint(true);
+    setTimeout(() => {
+      setShowTint(false);
+    }, 3000);
+  }, []);
+  return (
+    <CopyBox>
+      <span
+        onClick={async () => {
+          try {
+            await navigator.clipboard.writeText(address);
+            showTintAction();
+          } catch (error) {
+            console.log("Copied Fail");
+          }
+        }}
+      >
+        <CopyIcon />
+      </span>
+      {showTint && <span className="tint">Copied</span>}
+    </CopyBox>
+  );
+}
+
+const CopyBox = styled.div`
+  position: relative;
+  .tint {
+    position: absolute;
+    bottom: -30px;
+    left: -20px;
+    background: #1b1e23;
+    border: solid 1px gray;
+    border-radius: 5px;
+    padding: 5px;
+    z-index: 100;
+  }
+`;
 
 const WalletsContainer = styled.div`
   padding: 20px;
