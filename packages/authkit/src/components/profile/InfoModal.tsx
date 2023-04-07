@@ -1,9 +1,11 @@
 import Modal from "../modal/Modal";
 import { Button, Flex } from "rebass/styled-components";
+import { GraphQLError } from "graphql";
 import { uploadImage } from "../../utils/updateFile";
 import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import UserAvatar from "../avatar/UserAvatar";
+import Loading from "../loading";
 
 export interface AvatarEditModalProps {
   open: boolean;
@@ -14,7 +16,7 @@ export interface AvatarEditModalProps {
     bio: string;
     did: string;
   };
-  updateInfo: (url: string, name: string, bio: string) => void;
+  updateInfo: (url: string, name: string, bio: string) => Promise<void>;
 }
 
 export default function AvatarEditModal({
@@ -26,6 +28,8 @@ export default function AvatarEditModal({
   const [tempAvatar, setTempAvatar] = useState(info.avatar || "");
   const [tempName, setTempName] = useState(info.name || "");
   const [tempBio, setTempBio] = useState(info.bio || "");
+  const [errMsg, setErrMsg] = useState("");
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     setTempAvatar(info.avatar);
@@ -33,9 +37,21 @@ export default function AvatarEditModal({
     setTempBio(info.bio);
   }, [info]);
 
+  useEffect(() => {
+    setErrMsg("");
+  }, [tempAvatar, tempName, tempBio]);
+
   const saveAction = useCallback(async () => {
-    await updateInfo(tempAvatar, tempName, tempBio);
-    onClose();
+    try {
+      setUpdating(true);
+      await updateInfo(tempAvatar, tempName, tempBio);
+      onClose();
+    } catch (error) {
+      const errMsg = (error as ReadonlyArray<GraphQLError>)[0].toJSON().message;
+      setErrMsg(errMsg);
+    } finally {
+      setUpdating(false);
+    }
   }, [tempAvatar, tempBio, tempName]);
   return (
     <Modal title={"Edit Profile"} isOpen={open} onClose={onClose}>
@@ -83,7 +99,12 @@ export default function AvatarEditModal({
           />
         </TextBox>
 
-        <SaveBtn onClick={saveAction}>Save</SaveBtn>
+        {(updating && (
+          <SaveBtn>
+            <Loading /> Save
+          </SaveBtn>
+        )) || <SaveBtn onClick={saveAction}>Save</SaveBtn>}
+        {errMsg && <p className="err">{errMsg}</p>}
       </ContainerBox>
     </Modal>
   );
@@ -95,8 +116,12 @@ const ContainerBox = styled(Flex)`
   justify-content: center;
 
   gap: 10px;
-  /* background: #1b1e23; */
   width: 380px;
+
+  .err {
+    color: red;
+    margin: 0;
+  }
 `;
 
 const AvatarBox = styled.div`

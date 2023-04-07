@@ -1,6 +1,6 @@
 {
   "name": "@us3r-network/authkit",
-  "version": "0.6.12",
+  "version": "0.6.13",
   "description": "",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -22,6 +22,7 @@
   "dependencies": {
     "@multiavatar/multiavatar": "^1.0.7",
     "@rebass/forms": "^4.0.6",
+    "graphql": "^16.6.0",
     "react-intersection-observer": "^9.3.4",
     "react-rating-stars-component": "^2.2.0",
     "rebass": "^4.0.7",
