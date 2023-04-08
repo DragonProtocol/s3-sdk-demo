@@ -22,6 +22,7 @@ export const AuthModalContext = createContext<AppContextValue>({
 const authToolTypes = [
   AuthToolType.metamask_wallet,
   AuthToolType.phantom_wallet,
+  AuthToolType.rainbowKit,
 ];
 const App: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
   const [theme, setTheme] = React.useState<ThemeType>("dark");

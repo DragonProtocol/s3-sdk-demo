@@ -22,13 +22,17 @@ import {
   getAuthLastFromStorage,
   setAuthLastToStorage,
 } from "../../utils/storage";
+import RainbowKitConnectProvider from "./RainbowKitConnectProvider";
 
 export interface Us3rAuthContextValue {
   authorizers: Authorizer[];
   lastAuthToolType: AuthToolType;
   updateLastAuthorizer: (authToolType: AuthToolType) => void;
   getAuthorizer: (authToolType: AuthToolType) => Maybe<Authorizer>;
-  loginWithAuthorizer: (authToolType: AuthToolType) => Promise<void>;
+  loginWithAuthorizer: (
+    authToolType: AuthToolType,
+    provider?: any
+  ) => Promise<void>;
   logout: () => void;
   authComposeClientsValid: boolean;
 }
@@ -114,13 +118,16 @@ export default function Us3rAuthProvider({
   );
 
   const loginWithAuthorizer = useCallback(
-    async (authToolType: AuthToolType) => {
+    async (authToolType: AuthToolType, provider?: any) => {
       switch (authToolType) {
         case AuthToolType.metamask_wallet:
           await connectUs3r("metamask");
           break;
         case AuthToolType.phantom_wallet:
           await connectUs3r("phantom");
+          break;
+        case AuthToolType.rainbowKit:
+          await connectUs3r("ethProvider", provider);
           break;
         default:
           throw Error("Unsupported authToolType");
@@ -155,11 +162,12 @@ export default function Us3rAuthProvider({
       authComposeClientsValid,
     ]
   );
-
   return (
     <Us3rAuthContext.Provider value={providerValue}>
       <ThemeProvider theme={getTheme(themeConfig)}>
-        <ModalProvider>{children}</ModalProvider>
+        <RainbowKitConnectProvider>
+          <ModalProvider>{children}</ModalProvider>
+        </RainbowKitConnectProvider>
       </ThemeProvider>
     </Us3rAuthContext.Provider>
   );

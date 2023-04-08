@@ -4,7 +4,7 @@ import { SolanaWebAuth, getAccountIdByNetwork } from "@didtools/pkh-solana";
 import { EthereumWebAuth, getAccountId } from "@didtools/pkh-ethereum";
 import type { ComposeClient } from "@composedb/client";
 
-export type AuthChain = "metamask" | "phantom";
+export type AuthChain = "metamask" | "phantom" | "ethProvider";
 
 export const SessionKey = "did";
 export const SessionAuthWithKey = "session-auth-with";
@@ -32,13 +32,17 @@ export class Us3rAuth {
     }
   }
 
-  public async connect(chain: AuthChain = "metamask") {
+  public async connect(chain: AuthChain = "metamask", provider?: any) {
     if (!chain || chain === "metamask") {
       await this.authWithMetamask();
       this.valid = true;
     }
     if (chain === "phantom") {
       await this.authWithPhantom();
+      this.valid = true;
+    }
+    if (chain === "ethProvider") {
+      await this.authWithEthProvider(provider);
       this.valid = true;
     }
   }
@@ -79,6 +83,23 @@ export class Us3rAuth {
     });
     localStorage.setItem("did", this.session.serialize());
     localStorage.setItem(SessionAuthWithKey, "metamask");
+  }
+
+  public async authWithEthProvider(ethProvider: any) {
+    const addresses = await ethProvider.enable({
+      method: "eth_requestAccounts",
+    });
+    const accountId = await getAccountId(ethProvider, addresses[0]);
+    const authMethod = await EthereumWebAuth.getAuthMethod(
+      ethProvider,
+      accountId
+    );
+    accountId.chainId.reference = "1";
+    this.session = await DIDSession.authorize(authMethod, {
+      resources: ["ceramic://*"],
+    });
+    localStorage.setItem("did", this.session.serialize());
+    localStorage.setItem(SessionAuthWithKey, "ethProvider");
   }
 
   public authComposeClients(composeClients: ComposeClient[]) {

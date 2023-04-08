@@ -10,6 +10,7 @@ const Page: React.VFC = () => {
           gap: "20px",
         }}
       >
+        <LoginWithAuthorizerButton authToolType={AuthToolType.rainbowKit} />
         <LoginWithAuthorizerButton
           authToolType={AuthToolType.metamask_wallet}
         />

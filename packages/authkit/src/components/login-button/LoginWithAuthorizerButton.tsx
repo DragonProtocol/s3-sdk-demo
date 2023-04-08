@@ -4,6 +4,7 @@ import { Button, Text, Image } from "rebass//styled-components";
 import { AuthToolType } from "../../authorizers";
 import { useUs3rAuthModal } from "../provider/AuthModalContext";
 import { useUs3rAuth } from "../provider/Us3rAuthProvider";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 export type LoginWithAuthorizerButtonProps =
   StyledComponentPropsWithRef<"button"> & {
@@ -20,14 +21,20 @@ export default function LoginWithAuthorizerButton({
   const { loginModalOpen, closeLoginModal } = useUs3rAuthModal();
   const authorizer = getAuthorizer(authToolType);
   const [loading, setLoading] = useState(false);
+  const { openConnectModal } = useConnectModal();
 
   if (!authorizer) return null;
   const { name, iconUrl, buttonVariant } = authorizer;
 
   return (
     <Button
-      variant={buttonVariant}
+      variant={buttonVariant || "primary"}
       onClick={() => {
+        if (authToolType === AuthToolType.rainbowKit) {
+          if (loginModalOpen) closeLoginModal();
+          if (openConnectModal) openConnectModal();
+          return;
+        }
         setLoading(true);
         loginWithAuthorizer(authToolType)
           .then(() => {

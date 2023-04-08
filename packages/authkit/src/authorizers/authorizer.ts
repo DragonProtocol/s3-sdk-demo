@@ -3,6 +3,7 @@ export enum AccountType {
   EVM = "EVM",
 }
 export enum AuthToolType {
+  rainbowKit = "rainbowKit",
   metamask_wallet = "metamask_wallet",
   phantom_wallet = "phantom_wallet",
 }

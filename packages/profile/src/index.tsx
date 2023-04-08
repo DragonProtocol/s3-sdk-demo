@@ -31,7 +31,7 @@ const CeramicContext =
     us3rAuthValid: boolean;
     getProfileWithDid: (did: string) => Promise<any>;
     updateProfile: (data: Profile) => Promise<void>;
-    connectUs3r: (chain?: AuthChain) => Promise<void>;
+    connectUs3r: (chain?: AuthChain, provider?: any) => Promise<void>;
     disconnect: () => Promise<void>;
     sessId: string;
     profile?: Profile;
@@ -83,8 +83,8 @@ export const Us3rProfileProvider = ({
   }, []);
 
   const connectUs3r = useCallback(
-    async (chain?: AuthChain) => {
-      await us3rAuth.connect(chain);
+    async (chain?: AuthChain, provider?: any) => {
+      await us3rAuth.connect(chain, provider);
       us3rAuth.authComposeClients([profileComposeClient]);
       const profile = await getPersonalProfile();
       setSessId(us3rAuth.session?.id || "");
