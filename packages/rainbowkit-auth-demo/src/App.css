@@ -1,0 +1,13 @@
+.App {
+  text-align: center;
+}
+
+table {
+  margin: 0 auto;
+}
+
+td {
+  padding: 5px;
+  max-width: 500px;
+  word-wrap: break-word;
+}

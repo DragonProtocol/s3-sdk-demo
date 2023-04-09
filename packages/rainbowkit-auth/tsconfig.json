@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "jsx": "react-jsx"
+  },
+  "files": ["./global.d.ts", "./image.d.ts"],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/", "dist/**/*"]
+}
