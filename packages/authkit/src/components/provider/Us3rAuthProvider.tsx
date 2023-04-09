@@ -22,7 +22,7 @@ import {
   getAuthLastFromStorage,
   setAuthLastToStorage,
 } from "../../utils/storage";
-import RainbowKitConnectProvider from "./RainbowKitConnectProvider";
+import RainbowKitAuthProvider from "./RainbowKitAuthProvider";
 
 export interface Us3rAuthContextValue {
   authorizers: Authorizer[];
@@ -165,9 +165,9 @@ export default function Us3rAuthProvider({
   return (
     <Us3rAuthContext.Provider value={providerValue}>
       <ThemeProvider theme={getTheme(themeConfig)}>
-        <RainbowKitConnectProvider>
+        <RainbowKitAuthProvider>
           <ModalProvider>{children}</ModalProvider>
-        </RainbowKitConnectProvider>
+        </RainbowKitAuthProvider>
       </ThemeProvider>
     </Us3rAuthContext.Provider>
   );
