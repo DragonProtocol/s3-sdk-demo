@@ -9,7 +9,7 @@
     "sourceMap": true,
     "allowJs": true,
     "declaration": true,
-    "declarationDir": "types",
+    // "declarationDir": "types",
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
@@ -22,5 +22,5 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
-  },
+  }
 }
