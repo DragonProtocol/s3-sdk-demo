@@ -10,8 +10,8 @@ import {
   PropsWithChildren,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
+  useState,
 } from "react";
 import {
   configureChains,
@@ -28,8 +28,7 @@ import {
   omniWallet,
   imTokenWallet,
 } from "@rainbow-me/rainbowkit/wallets";
-
-import { useUs3rProfileContext } from "@us3r-network/profile";
+import { Us3rAuth } from "@us3r-network/auth";
 
 const { chains, provider, webSocketProvider } = configureChains(
   [
@@ -68,31 +67,21 @@ const wagmiClient = createClient({
 });
 
 export interface RainbowKitAuthContextValue {
-  login: () => void;
-  logout: () => void;
+  us3rAuth: Us3rAuth | undefined;
+  auth: () => void;
 }
 const defaultContextValue: RainbowKitAuthContextValue = {
-  login: () => {},
-  logout: () => {},
+  us3rAuth: undefined,
+  auth: () => {},
 };
 
 const RainbowKitAuthContext = createContext(defaultContextValue);
 
 function RainbowKitAuth({ children }: PropsWithChildren) {
   const { openConnectModal } = useConnectModal();
-  const {
-    sessId,
-    connectUs3r,
-    disconnect: disconnectWithProfile,
-  } = useUs3rProfileContext()!;
 
-  // 确保us3r未登录时，wagmi也断开连接（为了可以打开rainbowkit的connect modal）
+  const [us3rAuth, setUs3rAuth] = useState<Us3rAuth>();
   const { disconnect } = useDisconnect();
-  useEffect(() => {
-    if (!sessId) {
-      disconnect();
-    }
-  }, [sessId, disconnect]);
 
   // 监听wagmi的连接状态，当触发连接成功时，启动us3r的授权流程
   useAccount({
@@ -101,7 +90,17 @@ function RainbowKitAuth({ children }: PropsWithChildren) {
         const provider = await connector?.getProvider();
         // !isReconnected 表示不识别自动重连，因为自动重连时，us3r的session可能没有过期，按理不应该重新授权
         if (!isReconnected && provider) {
-          await connectUs3r("ethProvider", provider);
+          const us3rAuth = new Us3rAuth();
+          await us3rAuth.connect("ethProvider", provider);
+
+          // 重写us3rAuth.disconnect方法，在us3rAuth.disconnect调用后，接着调用wagmi的disconnect() (这一步是为了保证下一次还可以打开rainbowkit的modal)
+          const originalDisconnect = us3rAuth.disconnect.bind(us3rAuth);
+          us3rAuth.disconnect = async (...args) => {
+            await originalDisconnect(...args);
+            disconnect();
+          };
+
+          setUs3rAuth(us3rAuth);
         } else {
           disconnect();
         }
@@ -111,24 +110,20 @@ function RainbowKitAuth({ children }: PropsWithChildren) {
     },
   });
 
-  const login = useCallback(() => {
+  const auth = useCallback(() => {
     if (openConnectModal) openConnectModal();
   }, [openConnectModal]);
 
-  const logout = useCallback(async () => {
-    await disconnectWithProfile();
-  }, [disconnectWithProfile]);
-
-  const providerValue = useMemo(
-    () => ({
-      login,
-      logout,
-    }),
-    [login, logout]
-  );
-
   return (
-    <RainbowKitAuthContext.Provider value={providerValue}>
+    <RainbowKitAuthContext.Provider
+      value={useMemo(
+        () => ({
+          us3rAuth,
+          auth,
+        }),
+        [us3rAuth, auth]
+      )}
+    >
       {children}
     </RainbowKitAuthContext.Provider>
   );

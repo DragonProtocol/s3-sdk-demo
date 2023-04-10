@@ -1,51 +1,34 @@
 import "./App.css";
-import { useUs3rProfileContext } from "@us3r-network/profile";
-import { UserAvatar, Username } from "@us3r-network/authkit";
 import { useRainbowKitAuth } from "@us3r-network/rainbowkit-auth";
 
 function App() {
-  const { sessId, us3rAuth } = useUs3rProfileContext()!;
-  const { login, logout } = useRainbowKitAuth();
+  const { us3rAuth, auth } = useRainbowKitAuth();
 
+  const isAuthorized = us3rAuth && us3rAuth.session?.isAuthorized();
   return (
     <div className="App">
       <p>
         <button
           onClick={() => {
-            if (sessId) {
-              console.log("aaa");
-              logout();
+            if (isAuthorized) {
+              us3rAuth.disconnect([]);
             } else {
-              console.log("bbb");
-              login();
+              auth();
             }
           }}
         >
-          {sessId ? "Logout" : "Login"}
+          {isAuthorized ? "Logout" : "Login"}
         </button>
       </p>
 
       <table border={1}>
         <tr>
-          <td>UserAvatar</td>
-          <td>
-            <UserAvatar did={sessId} />
-          </td>
-        </tr>
-        <tr>
-          <td>Username</td>
-          <td>
-            <Username did={sessId} />
-          </td>
-        </tr>
-
-        <tr>
           <td>sessId</td>
-          <td>{sessId}</td>
+          <td>{us3rAuth?.session?.id}</td>
         </tr>
         <tr>
           <td>sessionStr</td>
-          <td>{us3rAuth.session?.serialize()}</td>
+          <td>{us3rAuth?.session?.serialize()}</td>
         </tr>
       </table>
     </div>

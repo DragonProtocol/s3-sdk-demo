@@ -18,7 +18,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@rainbow-me/rainbowkit": "^0.12.7"
+    "@rainbow-me/rainbowkit": "^0.12.7",
+    "@us3r-network/auth": "^0.1.3"
   },
   "peerDependencies": {
     "@us3r-network/profile": "^0.2.1",
