@@ -30,7 +30,11 @@ export default class S3ProfileModel extends S3Model {
   }
   public async queryPersonalProfile() {
     const profileComposeClient = this.composeClient;
-    const profile = await profileComposeClient.executeQuery(`
+    const profile = await profileComposeClient.executeQuery<{
+      viewer: {
+        profile: Profile;
+      };
+    }>(`
       query {
         viewer {
           profile {
@@ -69,13 +73,16 @@ export default class S3ProfileModel extends S3Model {
         updateProfile(input: $input) {
           document {
             id
-            name
           }
         }
       }
     `;
     const profileComposeClient = this.composeClient;
-    const update = await profileComposeClient.executeQuery(query, {
+    const update = await profileComposeClient.executeQuery<{
+      updateProfile: {
+        document: { id: string };
+      };
+    }>(query, {
       input: {
         content: {
           name,
@@ -100,14 +107,17 @@ export default class S3ProfileModel extends S3Model {
       mutation($input: CreateProfileInput!) {
         createProfile(input: $input) {
           document {
-              id
-              name
+            id
           }
         }
       }
     `;
     const profileComposeClient = this.composeClient;
-    const update = await profileComposeClient.executeQuery(query, {
+    const update = await profileComposeClient.executeQuery<{
+      createProfile: {
+        document: { id: string };
+      };
+    }>(query, {
       input: {
         content: {
           name,
@@ -144,7 +154,12 @@ export default class S3ProfileModel extends S3Model {
       }
     `;
     const profileComposeClient = this.composeClient;
-    const res = await profileComposeClient.executeQuery(query, {
+    const res = await profileComposeClient.executeQuery<{
+      node: {
+        id: string;
+        profile: Profile;
+      };
+    }>(query, {
       id: did,
     });
 
