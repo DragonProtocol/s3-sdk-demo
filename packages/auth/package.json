@@ -11,7 +11,8 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pub": "npm publish --access public --tag latest"
   },
   "keywords": [],
   "author": "",
@@ -30,7 +31,6 @@
   "dependencies": {
     "@didtools/pkh-ethereum": "^0.2.1",
     "@didtools/pkh-solana": "^0.1.0",
-    "@types/react-dom": "^18.0.9",
     "did-session": "^2.0.0"
   }
 }
