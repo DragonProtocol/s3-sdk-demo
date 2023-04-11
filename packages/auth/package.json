@@ -28,13 +28,9 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@composedb/client": "^0.4.3",
     "@didtools/pkh-ethereum": "^0.2.1",
     "@didtools/pkh-solana": "^0.1.0",
     "@types/react-dom": "^18.0.9",
-    "did-session": "^2.0.0",
-    "dids": "^4.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "did-session": "^2.0.0"
   }
 }
