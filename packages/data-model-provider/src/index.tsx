@@ -10,7 +10,7 @@ const ModelsContext =
     disconnectModelFromSess: () => void;
   } | null>(null);
 
-export default function DataModelProvider({
+export default function S3DataModelProvider({
   models,
   children,
 }: React.PropsWithChildren & { models: Model[] }) {
@@ -28,6 +28,8 @@ export default function DataModelProvider({
     });
   }, [models]);
 
+  // TODO model picker ?
+
   return (
     <ModelsContext.Provider
       value={{
@@ -40,7 +42,7 @@ export default function DataModelProvider({
   );
 }
 
-export const useS3ModelContext = () => {
+export const useS3DataModelContext = () => {
   const modelCtx = useContext(ModelsContext);
   if (!modelCtx) {
     throw new Error("init data-model-provider first");
