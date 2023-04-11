@@ -21,5 +21,34 @@ const s3Profile = new S3ProfileModel(CERAMIC_HOST)
 ```ts
 const didSession = '...'
 s3Profile.authModelWithSess(didSession)
+
+```
+
+### S3Profile Read & Write
+
+after authorization, the profile can write with method
+
+```ts
+
+...
+await s3Profile.mutationPersonalProfile(/** {...profile} */)
+...
+
+```
+
+and read the profile with
+
+```ts
+...
+await s3Profile.queryPersonalProfile()
+...
+```
+
+or get others profile with a did
+
+```ts
+...
+await s3Profile.queryProfileWithDid(/** did */)
+...
 ```
 
