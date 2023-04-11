@@ -1,10 +1,45 @@
 import "./App.css";
-import { useUs3rAuth } from "@us3r-network/auth-with-rainbowkit";
+import { useEffect } from "react";
+import {
+  Us3rAuthProvider,
+  useUs3rAuth,
+} from "@us3r-network/auth-with-rainbowkit";
+import S3DataModelProvider, {
+  useS3DataModelContext,
+} from "@us3r-network/data-model-provider";
+import S3ProfileModel from "@us3r-network/data-model-profile";
+
+const CERAMIC_HOST = process.env.CERAMIC_HOST || "http://13.215.254.225:7007";
+
+const s3Profile = new S3ProfileModel(CERAMIC_HOST);
 
 function App() {
+  return (
+    <Us3rAuthProvider>
+      <S3DataModelProvider models={[s3Profile]}>
+        <AuthWrap />
+      </S3DataModelProvider>
+    </Us3rAuthProvider>
+  );
+}
+
+function AuthWrap() {
   const { session, ready, status, signIn, signOut } = useUs3rAuth();
 
   const isAuthorized = session?.isAuthorized();
+
+  const { authModelWithSess, disconnectModelFromSess } =
+    useS3DataModelContext();
+
+  useEffect(() => {
+    if (!ready) return;
+    if (session) {
+      authModelWithSess(session);
+    } else {
+      disconnectModelFromSess();
+    }
+  }, [ready, session, authModelWithSess, disconnectModelFromSess]);
+
   return (
     <div className="App">
       <p>

@@ -4,16 +4,12 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
-import { Us3rAuthProvider } from "@us3r-network/auth-with-rainbowkit";
-
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <Us3rAuthProvider>
-      <App />
-    </Us3rAuthProvider>
+    <App />
   </React.StrictMode>
 );
 
