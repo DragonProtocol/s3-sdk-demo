@@ -1,22 +1,75 @@
-import { DID } from "dids";
 import { DIDSession } from "did-session";
 import { SolanaWebAuth, getAccountIdByNetwork } from "@didtools/pkh-solana";
 import { EthereumWebAuth, getAccountId } from "@didtools/pkh-ethereum";
-import type { ComposeClient } from "@composedb/client";
-
-export type AuthChain = "metamask" | "phantom";
 
 export const SessionKey = "did";
 export const SessionAuthWithKey = "session-auth-with";
 
+export type BlockChain = "ethereum" | "solana";
+
+type EthereumAuthConfig = {
+  provider?: any;
+  chainId?: string;
+  resources?: string[];
+};
+
+type SolanaAuthConfig = {
+  provider?: any;
+  network?: "mainnet" | "testnet" | "devnet";
+  resources?: string[];
+};
+
+type AuthConfigs = {
+  ethereum: EthereumAuthConfig;
+  solana: SolanaAuthConfig;
+};
+type AuthConfig<T extends BlockChain> = ReturnType<() => AuthConfigs[T]>;
+
+async function authWithEthProvider({
+  provider,
+  chainId,
+  resources,
+}: Required<EthereumAuthConfig>) {
+  const addresses = await provider.enable({
+    method: "eth_requestAccounts",
+  });
+  const accountId = await getAccountId(provider, addresses[0]);
+  const authMethod = await EthereumWebAuth.getAuthMethod(provider, accountId);
+  accountId.chainId.reference = chainId;
+  return await DIDSession.authorize(authMethod, {
+    resources,
+  });
+}
+
+async function authWithSolProvider({
+  provider,
+  network,
+  resources,
+}: Required<SolanaAuthConfig>) {
+  const address = await provider.connect();
+  const accountId = getAccountIdByNetwork(
+    network,
+    address.publicKey.toString()
+  );
+  const authMethod = await SolanaWebAuth.getAuthMethod(provider, accountId);
+  return await DIDSession.authorize(authMethod, {
+    resources,
+  });
+}
+
+const defaultResources = ["ceramic://*"];
+
 export class Us3rAuth {
   session: DIDSession | undefined;
-  valid: boolean;
   constructor() {
-    this.valid = false;
+    this.session = undefined;
   }
 
-  public async restoreFromLocal() {
+  /**
+   * @description init session
+   * @returns {Promise<void>}
+   */
+  public async init(): Promise<void> {
     const sessionStr = localStorage.getItem(SessionKey);
 
     if (sessionStr) {
@@ -24,81 +77,50 @@ export class Us3rAuth {
 
       if (!session || (session.hasSession && session.isExpired)) {
         this.session = undefined;
-        this.valid = false;
       } else {
         this.session = session;
-        this.valid = true;
       }
     }
   }
 
-  public async connect(chain: AuthChain = "metamask") {
-    if (!chain || chain === "metamask") {
-      await this.authWithMetamask();
-      this.valid = true;
+  /**
+   * @description auth with blockchain
+   * @param {BlockChain} chain - blockchain name
+   * @param {AuthConfig<T>} config - auth config
+   * @returns {Promise<void>}
+   */
+  public async auth<T extends BlockChain>(
+    chain: T,
+    config?: AuthConfig<T>
+  ): Promise<void> {
+    switch (chain) {
+      case "ethereum":
+        this.session = await authWithEthProvider({
+          provider: config?.provider || (window as any).ethereum,
+          chainId: (config as EthereumAuthConfig)?.chainId || "1",
+          resources: config?.resources || defaultResources,
+        });
+        break;
+      case "solana":
+        this.session = await authWithSolProvider({
+          provider: config?.provider || (window as any).phantom.solana,
+          network: (config as SolanaAuthConfig)?.network || "mainnet",
+          resources: config?.resources || defaultResources,
+        });
+        break;
+      default:
+        return;
     }
-    if (chain === "phantom") {
-      await this.authWithPhantom();
-      this.valid = true;
-    }
-  }
-
-  public async authWithPhantom(
-    network: "mainnet" | "testnet" | "devnet" = "devnet"
-  ) {
-    const solProvider = (window as any).phantom.solana;
-    const address = await solProvider.connect();
-    const accountId = getAccountIdByNetwork(
-      network,
-      address.publicKey.toString()
-    );
-    const authMethod = await SolanaWebAuth.getAuthMethod(
-      solProvider,
-      accountId
-    );
-    this.session = await DIDSession.authorize(authMethod, {
-      resources: ["ceramic://*"],
-    });
     localStorage.setItem(SessionKey, this.session.serialize());
-    localStorage.setItem(SessionAuthWithKey, "phantom");
+    localStorage.setItem(SessionAuthWithKey, chain);
   }
 
-  public async authWithMetamask() {
-    const ethProvider = (window as any).ethereum;
-    const addresses = await ethProvider.enable({
-      method: "eth_requestAccounts",
-    });
-    const accountId = await getAccountId(ethProvider, addresses[0]);
-    const authMethod = await EthereumWebAuth.getAuthMethod(
-      ethProvider,
-      accountId
-    );
-    accountId.chainId.reference = "1";
-    this.session = await DIDSession.authorize(authMethod, {
-      resources: ["ceramic://*"],
-    });
-    localStorage.setItem("did", this.session.serialize());
-    localStorage.setItem(SessionAuthWithKey, "metamask");
-  }
-
-  public authComposeClients(composeClients: ComposeClient[]) {
-    if (!this.session || (this.session.hasSession && this.session.isExpired)) {
-      this.valid = false;
-      throw new Error("Please login with wallet first!");
-    }
-    const session = this.session;
-    composeClients.forEach((item) => {
-      item.setDID(session.did);
-    });
-  }
-
-  public async disconnect(composeClients: ComposeClient[]) {
-    localStorage.removeItem("did");
+  /**
+   * @description remove session
+   * @returns {Promise<void>}
+   */
+  public async removeSession(): Promise<void> {
+    localStorage.removeItem(SessionKey);
     this.session = undefined;
-    this.valid = false;
-    const did = new DID();
-    composeClients.forEach((item) => {
-      item.setDID(did);
-    });
   }
 }
